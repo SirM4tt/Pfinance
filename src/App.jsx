@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuth } from './hooks/useAuth'
-import { useCategories } from './hooks/useCategories'
-import { useExpenses } from './hooks/useExpenses'
-import { useIncome } from './hooks/useIncome'
+import { useFinanceData } from './hooks/useFinanceData'
+import { useSplurge } from './hooks/useSplurge'
 import { getMonthKey } from './lib/utils'
 import LoginScreen from './components/auth/LoginScreen'
+import WelcomeIncomeModal from './components/income/WelcomeIncomeModal'
 import BottomNav from './components/layout/BottomNav'
+import SupabaseStatus from './components/layout/SupabaseStatus'
 import Dashboard from './pages/Dashboard'
 import Expenses from './pages/Expenses'
 import Budget from './pages/Budget'
+import Splurge from './pages/Splurge'
 import Settings from './pages/Settings'
 
 export default function App() {
@@ -16,14 +18,21 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [monthKey, setMonthKey] = useState(getMonthKey())
 
-  const { categories, addCategory, deleteCategory, setBudgetLimit } = useCategories(user)
-  const { income, setIncome } = useIncome(user, monthKey)
-  const { expenses, addExpense, deleteExpense, totalSpent, chartData } = useExpenses(user, monthKey)
+  const userId = user?.id
+  const dataEnabled = !!userId && !authLoading
+
+  const finance = useFinanceData(userId, monthKey, dataEnabled)
+  const splurge = useSplurge(userId, dataEnabled && activeTab === 'splurge')
+
+  const showWelcomeIncome = dataEnabled && !finance.loading && !finance.hasIncomeRecord
+
+  const handleViewAllExpenses = useCallback(() => setActiveTab('expenses'), [])
+  const handleEditPrimary = useCallback(() => setActiveTab('settings'), [])
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-navy font-medium">Loading...</div>
+      <div className="app-shell flex items-center justify-center">
+        <div className="text-white/70 font-medium">Loading...</div>
       </div>
     )
   }
@@ -32,58 +41,89 @@ export default function App() {
     return <LoginScreen />
   }
 
-  const handleViewAllExpenses = () => setActiveTab('expenses')
-
   return (
-    <div className="min-h-screen bg-gray-50 max-w-lg mx-auto relative">
-      {activeTab === 'dashboard' && (
+    <div className="app-shell max-w-lg mx-auto relative">
+      {!showWelcomeIncome && (
+        <SupabaseStatus
+          error={finance.error}
+          loading={finance.loading}
+          onRetry={finance.refresh}
+        />
+      )}
+
+      {showWelcomeIncome && (
+        <WelcomeIncomeModal isOpen monthKey={monthKey} onSubmit={finance.setIncome} />
+      )}
+
+      {!showWelcomeIncome && activeTab === 'dashboard' && (
         <Dashboard
           monthKey={monthKey}
           onMonthChange={setMonthKey}
-          income={income}
-          totalSpent={totalSpent}
-          expenses={expenses}
-          chartData={chartData}
-          categories={categories}
-          onAddExpense={addExpense}
+          income={finance.totalIncome}
+          totalSpent={finance.totalSpent}
+          expenses={finance.expenses}
+          chartData={finance.chartData}
+          categories={finance.categories}
+          onAddExpense={finance.addExpense}
           onViewAllExpenses={handleViewAllExpenses}
         />
       )}
 
-      {activeTab === 'expenses' && (
+      {!showWelcomeIncome && activeTab === 'expenses' && (
         <Expenses
           monthKey={monthKey}
           onMonthChange={setMonthKey}
-          expenses={expenses}
-          categories={categories}
-          onAddExpense={addExpense}
-          onDeleteExpense={deleteExpense}
+          expenses={finance.expenses}
+          categories={finance.categories}
+          onAddExpense={finance.addExpense}
+          onDeleteExpense={finance.deleteExpense}
         />
       )}
 
-      {activeTab === 'budget' && (
+      {!showWelcomeIncome && activeTab === 'budget' && (
         <Budget
           monthKey={monthKey}
           onMonthChange={setMonthKey}
-          categories={categories}
-          expenses={expenses}
-          onSetBudgetLimit={setBudgetLimit}
+          categories={finance.categories}
+          expenses={finance.expenses}
+          primaryIncome={finance.income}
+          sources={finance.sources}
+          totalIncome={finance.totalIncome}
+          onSetBudgetLimit={finance.setBudgetLimit}
+          onAddSource={finance.addSource}
+          onUpdateSource={finance.updateSource}
+          onDeleteSource={finance.deleteSource}
+          onEditPrimary={handleEditPrimary}
         />
       )}
 
-      {activeTab === 'settings' && (
+      {!showWelcomeIncome && activeTab === 'splurge' && (
+        <Splurge
+          goals={splurge.goals}
+          loading={splurge.loading}
+          onAddGoal={splurge.addGoal}
+          onUpdateGoal={splurge.updateGoal}
+          onDeleteGoal={splurge.deleteGoal}
+          onAddContribution={splurge.addContribution}
+        />
+      )}
+
+      {!showWelcomeIncome && activeTab === 'settings' && (
         <Settings
           user={user}
-          income={income}
-          categories={categories}
-          onSetIncome={setIncome}
-          onAddCategory={addCategory}
-          onDeleteCategory={deleteCategory}
+          income={finance.income}
+          totalIncome={finance.totalIncome}
+          categories={finance.categories}
+          onSetIncome={finance.setIncome}
+          onAddCategory={finance.addCategory}
+          onDeleteCategory={finance.deleteCategory}
           onSignOut={signOut}
         />
       )}
 
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      {!showWelcomeIncome && (
+        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+      )}
     </div>
   )
 }

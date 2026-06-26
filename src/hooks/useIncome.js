@@ -1,13 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
-export function useIncome(user, monthKey) {
+export function useIncome(userId, monthKey) {
   const [income, setIncome] = useState(0)
+  const [hasRecord, setHasRecord] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const fetchIncome = useCallback(async () => {
-    if (!user) {
+    if (!userId) {
       setIncome(0)
+      setHasRecord(false)
       setLoading(false)
       return
     }
@@ -17,19 +19,21 @@ export function useIncome(user, monthKey) {
     const { data, error } = await supabase
       .from('income')
       .select('amount')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('month', monthKey)
       .maybeSingle()
 
     if (error) {
       console.error('Failed to fetch income:', error)
       setIncome(0)
+      setHasRecord(false)
     } else {
+      setHasRecord(!!data)
       setIncome(Number(data?.amount ?? 0))
     }
 
     setLoading(false)
-  }, [user, monthKey])
+  }, [userId, monthKey])
 
   useEffect(() => {
     fetchIncome()
@@ -41,11 +45,7 @@ export function useIncome(user, monthKey) {
     const { data, error } = await supabase
       .from('income')
       .upsert(
-        {
-          user_id: user.id,
-          month: monthKey,
-          amount: numericAmount,
-        },
+        { user_id: userId, month: monthKey, amount: numericAmount },
         { onConflict: 'user_id,month' }
       )
       .select('amount')
@@ -53,8 +53,15 @@ export function useIncome(user, monthKey) {
 
     if (error) throw error
     setIncome(Number(data.amount))
+    setHasRecord(true)
     return data
   }
 
-  return { income, loading, setIncome: setIncomeAmount, refresh: fetchIncome }
+  return {
+    income,
+    hasRecord,
+    loading,
+    setIncome: setIncomeAmount,
+    refresh: fetchIncome,
+  }
 }

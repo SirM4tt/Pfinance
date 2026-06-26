@@ -2,13 +2,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { getMonthDateRange } from '../lib/utils'
 
-export function useExpenses(user, monthKey) {
+export function useExpenses(userId, monthKey, enabled = true) {
   const [expenses, setExpenses] = useState([])
   const [loading, setLoading] = useState(true)
 
   const fetchExpenses = useCallback(async () => {
-    if (!user) {
-      setExpenses([])
+    if (!userId || !enabled) {
+      if (!userId) setExpenses([])
       setLoading(false)
       return
     }
@@ -19,7 +19,7 @@ export function useExpenses(user, monthKey) {
     const { data, error } = await supabase
       .from('expenses')
       .select('*, categories(id, name, color, icon, budget_limit)')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .gte('date', start)
       .lte('date', end)
       .order('date', { ascending: false })
@@ -33,7 +33,7 @@ export function useExpenses(user, monthKey) {
     }
 
     setLoading(false)
-  }, [user, monthKey])
+  }, [userId, monthKey, enabled])
 
   useEffect(() => {
     fetchExpenses()
@@ -43,7 +43,7 @@ export function useExpenses(user, monthKey) {
     const { data, error } = await supabase
       .from('expenses')
       .insert({
-        user_id: user.id,
+        user_id: userId,
         name,
         amount: Number(amount),
         category_id: category_id || null,
@@ -78,14 +78,7 @@ export function useExpenses(user, monthKey) {
       const catIcon = exp.categories?.icon || '💳'
 
       if (!map[catId]) {
-        map[catId] = {
-          id: catId,
-          name: catName,
-          color: catColor,
-          icon: catIcon,
-          total: 0,
-          count: 0,
-        }
+        map[catId] = { id: catId, name: catName, color: catColor, icon: catIcon, total: 0, count: 0 }
       }
       map[catId].total += Number(exp.amount)
       map[catId].count += 1

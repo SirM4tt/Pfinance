@@ -2,27 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { DEFAULT_CATEGORIES } from '../lib/utils'
 
-export function useCategories(user) {
+export function useCategories(userId) {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
 
-  const seedDefaultCategories = useCallback(async (userId) => {
-    const rows = DEFAULT_CATEGORIES.map((cat) => ({
-      user_id: userId,
-      ...cat,
-    }))
-
-    const { data, error } = await supabase
-      .from('categories')
-      .insert(rows)
-      .select()
-
-    if (error) throw error
-    return data
-  }, [])
-
   const fetchCategories = useCallback(async () => {
-    if (!user) {
+    if (!userId) {
       setCategories([])
       setLoading(false)
       return
@@ -42,19 +27,28 @@ export function useCategories(user) {
     }
 
     if (!data?.length) {
-      try {
-        const seeded = await seedDefaultCategories(user.id)
-        setCategories(seeded ?? [])
-      } catch (seedError) {
+      const rows = DEFAULT_CATEGORIES.map((cat) => ({
+        user_id: userId,
+        ...cat,
+      }))
+
+      const { data: seeded, error: seedError } = await supabase
+        .from('categories')
+        .insert(rows)
+        .select()
+
+      if (seedError) {
         console.error('Failed to seed categories:', seedError)
         setCategories([])
+      } else {
+        setCategories(seeded ?? [])
       }
     } else {
       setCategories(data)
     }
 
     setLoading(false)
-  }, [user, seedDefaultCategories])
+  }, [userId])
 
   useEffect(() => {
     fetchCategories()
@@ -64,7 +58,7 @@ export function useCategories(user) {
     const { data, error } = await supabase
       .from('categories')
       .insert({
-        user_id: user.id,
+        user_id: userId,
         name,
         color: color || '#818cf8',
         icon: icon || '💳',
@@ -99,9 +93,7 @@ export function useCategories(user) {
     setCategories((prev) => prev.filter((cat) => cat.id !== id))
   }
 
-  const setBudgetLimit = async (id, budget_limit) => {
-    return updateCategory(id, { budget_limit })
-  }
+  const setBudgetLimit = async (id, budget_limit) => updateCategory(id, { budget_limit })
 
   return {
     categories,

@@ -5,6 +5,7 @@ import DonutChart from '../components/dashboard/DonutChart'
 import BudgetProgress from '../components/dashboard/BudgetProgress'
 import RecentExpenses from '../components/dashboard/RecentExpenses'
 import AddExpenseModal from '../components/expenses/AddExpenseModal'
+import AddExpenseFab from '../components/expenses/AddExpenseFab'
 import { formatMonthLabel } from '../lib/utils'
 
 export default function Dashboard({
@@ -21,24 +22,23 @@ export default function Dashboard({
   const [showAddModal, setShowAddModal] = useState(false)
 
   return (
-    <div className="pb-20">
-      <TopBar monthKey={monthKey} onMonthChange={onMonthChange} />
-      <BalanceHero
-        income={income}
-        totalSpent={totalSpent}
-        monthLabel={formatMonthLabel(monthKey)}
-      />
-      <DonutChart data={chartData} />
-      <BudgetProgress categories={categories} expenses={expenses} limit={3} />
-      <RecentExpenses expenses={expenses} onViewAll={onViewAllExpenses} />
+    <div className="app-shell pb-28">
+      <div className="header-gradient pb-2">
+        <TopBar monthKey={monthKey} onMonthChange={onMonthChange} variant="hero" />
+        <BalanceHero
+          income={income}
+          totalSpent={totalSpent}
+          monthLabel={formatMonthLabel(monthKey)}
+        />
+      </div>
 
-      <button
-        onClick={() => setShowAddModal(true)}
-        className="fixed bottom-20 right-4 w-14 h-14 bg-navy text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-navy/90 transition-colors z-30"
-        aria-label="Add expense"
-      >
-        +
-      </button>
+      <div className="bg-[#0f0f1a]">
+        <DonutChart data={chartData} />
+        <BudgetProgress categories={categories} expenses={expenses} limit={3} />
+        <RecentExpenses expenses={expenses} onViewAll={onViewAllExpenses} />
+      </div>
+
+      <AddExpenseFab onClick={() => setShowAddModal(true)} />
 
       <AddExpenseModal
         isOpen={showAddModal}

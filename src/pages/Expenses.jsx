@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import TopBar from '../components/layout/TopBar'
 import ExpenseList from '../components/expenses/ExpenseList'
 import AddExpenseModal from '../components/expenses/AddExpenseModal'
+import AddExpenseFab from '../components/expenses/AddExpenseFab'
 
 export default function Expenses({
   monthKey,
@@ -27,7 +28,7 @@ export default function Expenses({
   }, [expenses, search, filterCategory])
 
   return (
-    <div className="pb-20">
+    <div className="app-shell pb-28">
       <TopBar monthKey={monthKey} onMonthChange={onMonthChange} />
 
       <div className="px-4 mb-4">
@@ -36,17 +37,17 @@ export default function Expenses({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search expenses..."
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent-blue/40"
         />
       </div>
 
       <div className="px-4 mb-4 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
         <button
           onClick={() => setFilterCategory('all')}
-          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+          className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
             filterCategory === 'all'
-              ? 'bg-navy text-white'
-              : 'bg-white text-gray-600 border border-gray-200'
+              ? 'bg-white/20 text-white border-white/30'
+              : 'bg-white/5 text-white/70 border-white/15'
           }`}
         >
           All
@@ -55,10 +56,10 @@ export default function Expenses({
           <button
             key={cat.id}
             onClick={() => setFilterCategory(cat.id)}
-            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
               filterCategory === cat.id
-                ? 'bg-navy text-white'
-                : 'bg-white text-gray-600 border border-gray-200'
+                ? 'bg-white/20 text-white border-white/30'
+                : 'bg-white/5 text-white/70 border-white/15'
             }`}
           >
             {cat.icon} {cat.name}
@@ -78,13 +79,7 @@ export default function Expenses({
         />
       </div>
 
-      <button
-        onClick={() => setShowAddModal(true)}
-        className="fixed bottom-20 right-4 w-14 h-14 bg-navy text-white rounded-full shadow-lg flex items-center justify-center text-2xl hover:bg-navy/90 transition-colors z-30"
-        aria-label="Add expense"
-      >
-        +
-      </button>
+      <AddExpenseFab onClick={() => setShowAddModal(true)} />
 
       <AddExpenseModal
         isOpen={showAddModal}
