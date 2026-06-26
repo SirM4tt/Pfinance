@@ -74,7 +74,7 @@ export default function Expenses({
           emptyMessage={
             search || filterCategory !== 'all'
               ? 'No matching expenses'
-              : 'No expenses this month'
+              : 'Add your first expense with the button below'
           }
         />
       </div>

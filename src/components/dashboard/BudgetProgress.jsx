@@ -1,4 +1,5 @@
 import { formatSGD } from '../../lib/utils'
+import { getBudgetMessage, getBudgetBarColor, getBudgetTextColor } from '../../lib/budgetMessages'
 
 export default function BudgetProgress({ categories, expenses, limit = 3 }) {
   const spentByCategory = {}
@@ -13,9 +14,9 @@ export default function BudgetProgress({ categories, expenses, limit = 3 }) {
     .map((cat) => {
       const spent = spentByCategory[cat.id] || 0
       const budgetLimit = Number(cat.budget_limit)
-      const percent = Math.min((spent / budgetLimit) * 100, 100)
-      const overBudget = spent > budgetLimit
-      return { ...cat, spent, limit: budgetLimit, percent, overBudget }
+      const percent = (spent / budgetLimit) * 100
+      const message = getBudgetMessage(spent, budgetLimit, Number(cat.last_month_spent) || 0)
+      return { ...cat, spent, limit: budgetLimit, percent, message }
     })
     .sort((a, b) => b.percent - a.percent)
     .slice(0, limit)
@@ -23,36 +24,35 @@ export default function BudgetProgress({ categories, expenses, limit = 3 }) {
   if (!withBudget.length) {
     return (
       <div className="mx-4 mt-4 glass-card p-6">
-        <h2 className="text-lg font-semibold text-white mb-2">Budget progress</h2>
-        <p className="text-sm text-white/40">Set category budgets in the Budget tab</p>
+        <h2 className="text-lg font-semibold text-[var(--theme-text-on-primary)] mb-2">Budget progress</h2>
+        <p className="text-sm text-[var(--theme-text-muted)]">Set category budgets in the Budget tab</p>
       </div>
     )
   }
 
   return (
     <div className="mx-4 mt-4 glass-card p-6">
-      <h2 className="text-lg font-semibold text-white mb-4">Budget progress</h2>
+      <h2 className="text-lg font-semibold text-[var(--theme-text-on-primary)] mb-4">Budget progress</h2>
       <div className="space-y-4">
         {withBudget.map((cat) => (
           <div key={cat.id}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium text-white/80">
+              <span className="text-sm font-medium text-[var(--theme-text-on-primary)]">
                 {cat.icon} {cat.name}
               </span>
-              <span className={`text-xs font-medium ${cat.overBudget ? 'text-accent-red' : 'text-white/50'}`}>
+              <span className={`text-xs font-medium ${getBudgetTextColor(cat.percent)}`}>
                 {formatSGD(cat.spent)} / {formatSGD(cat.limit)}
               </span>
             </div>
-            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-1">
               <div
-                className={`h-full rounded-full transition-all ${
-                  cat.overBudget
-                    ? 'bg-accent-red'
-                    : 'bg-gradient-to-r from-accent-green to-accent-blue'
-                }`}
-                style={{ width: `${cat.percent}%` }}
+                className={`h-full rounded-full transition-all ${getBudgetBarColor(cat.percent)}`}
+                style={{ width: `${Math.min(cat.percent, 100)}%` }}
               />
             </div>
+            {cat.message && (
+              <p className={`text-xs ${getBudgetTextColor(cat.percent)}`}>{cat.message}</p>
+            )}
           </div>
         ))}
       </div>

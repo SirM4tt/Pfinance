@@ -17,6 +17,12 @@ function pickData(res, fallback = null) {
   return { data: res.data ?? fallback, error: null }
 }
 
+function sortCategories(categories) {
+  return [...categories].sort(
+    (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0) || a.name.localeCompare(b.name)
+  )
+}
+
 export function useFinanceData(userId, monthKey, enabled = true) {
   const [data, setData] = useState(EMPTY)
 
@@ -56,7 +62,7 @@ export function useFinanceData(userId, monthKey, enabled = true) {
       if (sourcesResult.error) errors.push(`Income sources: ${sourcesResult.error.message}`)
       if (expensesResult.error) errors.push(`Expenses: ${expensesResult.error.message}`)
 
-      let categories = categoriesResult.data ?? []
+      let categories = sortCategories(categoriesResult.data ?? [])
 
       if (!categories.length && !categoriesResult.error) {
         const rows = DEFAULT_CATEGORIES.map((cat) => ({ user_id: userId, ...cat }))
@@ -64,7 +70,7 @@ export function useFinanceData(userId, monthKey, enabled = true) {
         if (seedError) {
           errors.push(`Category setup: ${seedError.message}`)
         } else {
-          categories = seeded ?? []
+          categories = sortCategories(seeded ?? [])
         }
       }
 
@@ -215,7 +221,7 @@ export function useFinanceData(userId, monthKey, enabled = true) {
     if (error) throw error
     setData((prev) => ({
       ...prev,
-      categories: [...prev.categories, row].sort((a, b) => a.name.localeCompare(b.name)),
+      categories: sortCategories([...prev.categories, row]),
     }))
     return row
   }
@@ -224,6 +230,61 @@ export function useFinanceData(userId, monthKey, enabled = true) {
     const { error } = await supabase.from('categories').delete().eq('id', id)
     if (error) throw error
     setData((prev) => ({ ...prev, categories: prev.categories.filter((c) => c.id !== id) }))
+  }
+
+  const updateCategory = async (id, updates) => {
+    const { data: row, error } = await supabase
+      .from('categories')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) throw error
+    setData((prev) => ({
+      ...prev,
+      categories: sortCategories(prev.categories.map((c) => (c.id === id ? row : c))),
+    }))
+    return row
+  }
+
+  const reorderCategories = async (orderedIds) => {
+    setData((prev) => ({
+      ...prev,
+      categories: orderedIds
+        .map((id, index) => {
+          const cat = prev.categories.find((c) => c.id === id)
+          return cat ? { ...cat, sort_order: index } : null
+        })
+        .filter(Boolean),
+    }))
+
+    const results = await Promise.all(
+      orderedIds.map((id, index) =>
+        supabase.from('categories').update({ sort_order: index }).eq('id', id)
+      )
+    )
+    const firstError = results.find((r) => r.error)?.error
+    if (firstError) {
+      console.warn('Category order not saved — run supabase/migrations-v3.sql:', firstError.message)
+    }
+  }
+
+  const fetchMonthSummary = async (targetMonthKey) => {
+    const { start, end } = getMonthDateRange(targetMonthKey)
+    const [incomeRes, sourcesRes, expensesRes] = await Promise.all([
+      supabase.from('income').select('amount').eq('user_id', userId).eq('month', targetMonthKey).maybeSingle(),
+      supabase.from('income_sources').select('amount').eq('user_id', userId).eq('month', targetMonthKey),
+      supabase
+        .from('expenses')
+        .select('amount')
+        .eq('user_id', userId)
+        .gte('date', start)
+        .lte('date', end),
+    ])
+    const primary = Number(incomeRes.data?.amount ?? 0)
+    const sources = (sourcesRes.data ?? []).reduce((s, r) => s + Number(r.amount), 0)
+    const totalSpent = (expensesRes.data ?? []).reduce((s, e) => s + Number(e.amount), 0)
+    return { income: primary + sources, totalSpent }
   }
 
   return {
@@ -241,6 +302,9 @@ export function useFinanceData(userId, monthKey, enabled = true) {
     setBudgetLimit,
     addCategory,
     deleteCategory,
+    updateCategory,
+    reorderCategories,
+    fetchMonthSummary,
     refresh: load,
   }
 }

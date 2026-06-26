@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import TopBar from '../components/layout/TopBar'
 import IncomeSourcesSection from '../components/income/IncomeSourcesSection'
+import { getBudgetMessage, getBudgetBarColor } from '../lib/budgetMessages'
 import { formatSGD } from '../lib/utils'
 
 export default function Budget({
@@ -59,29 +60,27 @@ export default function Budget({
       />
 
       <div className="mx-4 mb-6 glass-card p-5">
-        <p className="text-white/60 text-sm mb-3">Monthly summary</p>
+        <p className="text-[var(--theme-text-muted)] text-sm mb-3">Monthly summary</p>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-white/50 uppercase">Total budget</p>
-            <p className="text-xl font-bold text-white">{formatSGD(totalBudget)}</p>
+            <p className="text-xs text-[var(--theme-text-muted)] uppercase">Total budget</p>
+            <p className="text-xl font-bold text-[var(--theme-text-on-primary)]">{formatSGD(totalBudget)}</p>
           </div>
           <div>
-            <p className="text-xs text-white/50 uppercase">Total spent</p>
-            <p className={`text-xl font-bold ${totalSpent > totalBudget && totalBudget > 0 ? 'text-accent-red' : 'text-white'}`}>
-              {formatSGD(totalSpent)}
-            </p>
+            <p className="text-xs text-[var(--theme-text-muted)] uppercase">Total spent</p>
+            <p className="text-xl font-bold text-[var(--theme-text-on-primary)]">{formatSGD(totalSpent)}</p>
           </div>
         </div>
       </div>
 
       <div className="px-4 space-y-3">
-        <h2 className="text-lg font-semibold text-white mb-2 px-1">Category budgets</h2>
+        <h2 className="text-lg font-semibold text-[var(--theme-text-on-primary)] mb-2 px-1">Category budgets</h2>
 
         {categories.map((cat) => {
           const spent = spentByCategory[cat.id] || 0
           const limit = Number(cat.budget_limit) || 0
-          const percent = limit > 0 ? Math.min((spent / limit) * 100, 100) : 0
-          const overBudget = limit > 0 && spent > limit
+          const percent = limit > 0 ? (spent / limit) * 100 : 0
+          const message = limit > 0 ? getBudgetMessage(spent, limit, Number(cat.last_month_spent) || 0) : null
 
           return (
             <div key={cat.id} className="glass-card p-4">
@@ -94,8 +93,8 @@ export default function Budget({
                     {cat.icon}
                   </span>
                   <div>
-                    <p className="font-medium text-white">{cat.name}</p>
-                    <p className="text-xs text-white/50">
+                    <p className="font-medium text-[var(--theme-text-on-primary)]">{cat.name}</p>
+                    <p className="text-xs text-[var(--theme-text-muted)]">
                       {limit > 0 ? `${formatSGD(spent)} of ${formatSGD(limit)}` : 'No budget set'}
                     </p>
                   </div>
@@ -110,12 +109,12 @@ export default function Budget({
                       value={budgetInput}
                       onChange={(e) => setBudgetInput(e.target.value)}
                       placeholder="S$"
-                      className="w-24 px-2 py-1 text-sm rounded-lg bg-white/10 border border-white/20 text-white"
+                      className="w-24 px-2 py-1 text-sm rounded-lg bg-white/10 border border-white/20 text-[var(--theme-text-on-primary)]"
                       autoFocus
                     />
                     <button
                       onClick={() => saveBudget(cat.id)}
-                      className="text-sm text-accent-green font-medium"
+                      className="text-sm font-medium text-[var(--theme-accent)]"
                     >
                       Save
                     </button>
@@ -123,7 +122,7 @@ export default function Budget({
                 ) : (
                   <button
                     onClick={() => startEdit(cat)}
-                    className="text-sm text-accent-blue font-medium px-3 py-1 rounded-lg hover:bg-white/10"
+                    className="text-sm font-medium text-[var(--theme-accent-secondary)] px-3 py-1 rounded-lg hover:bg-white/10"
                   >
                     {limit > 0 ? 'Edit' : 'Set'}
                   </button>
@@ -131,14 +130,17 @@ export default function Budget({
               </div>
 
               {limit > 0 && (
-                <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full rounded-full transition-all ${
-                      overBudget ? 'bg-accent-red' : 'bg-gradient-to-r from-accent-green to-accent-blue'
-                    }`}
-                    style={{ width: `${percent}%` }}
-                  />
-                </div>
+                <>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-1">
+                    <div
+                      className={`h-full rounded-full transition-all ${getBudgetBarColor(percent)}`}
+                      style={{ width: `${Math.min(percent, 100)}%` }}
+                    />
+                  </div>
+                  {message && (
+                    <p className="text-xs text-[var(--theme-text-muted)]">{message}</p>
+                  )}
+                </>
               )}
             </div>
           )

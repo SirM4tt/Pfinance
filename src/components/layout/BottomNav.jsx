@@ -22,12 +22,17 @@ export default function BottomNav({ activeTab, onTabChange }) {
                 {tab.icon}
               </span>
               <span
-                className={`text-[10px] font-medium ${isActive ? 'text-white' : 'text-white/40'}`}
+                className={`text-[10px] font-medium ${
+                  isActive ? 'text-[var(--theme-text-on-primary)]' : 'text-[var(--theme-text-muted)]'
+                }`}
               >
                 {tab.label}
               </span>
               {isActive && (
-                <span className="w-5 h-0.5 rounded-full bg-accent-green mt-0.5" />
+                <span
+                  className="w-5 h-0.5 rounded-full mt-0.5"
+                  style={{ background: 'var(--theme-tab-active)' }}
+                />
               )}
             </button>
           )

@@ -47,7 +47,7 @@ export default function Splurge({ goals, loading, onAddGoal, onUpdateGoal, onDel
           <div className="glass-card p-8 text-center">
             <p className="text-4xl mb-3">✨</p>
             <p className="text-white/70 mb-1">No splurge goals yet</p>
-            <p className="text-sm text-white/40">Create a goal and start saving toward something special</p>
+            <p className="text-sm text-[var(--theme-text-muted)]">Create your first Splurge goal to start saving for something exciting</p>
           </div>
         ) : (
           goals.map((goal) => (
@@ -67,7 +67,7 @@ export default function Splurge({ goals, loading, onAddGoal, onUpdateGoal, onDel
           setEditingGoal(null)
           setShowGoalModal(true)
         }}
-        className="fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 flex items-center gap-2 bg-gradient-to-r from-accent-purple to-accent-blue text-white px-6 h-[52px] rounded-full shadow-xl font-semibold text-sm z-50 active:scale-95 transition-transform"
+        className="fab-button fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 h-[52px] rounded-full font-semibold text-sm z-50 active:scale-95 transition-transform"
       >
         + New Splurge Goal
       </button>

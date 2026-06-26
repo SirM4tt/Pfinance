@@ -6,16 +6,18 @@ export default function RecentExpenses({ expenses, onViewAll }) {
   return (
     <div className="mx-4 mt-4 mb-4 glass-card p-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white">Recent expenses</h2>
+        <h2 className="text-lg font-semibold text-[var(--theme-text-on-primary)]">Recent expenses</h2>
         {expenses.length > 5 && (
-          <button onClick={onViewAll} className="text-sm text-accent-blue font-medium">
+          <button onClick={onViewAll} className="text-sm font-medium text-[var(--theme-accent-secondary)]">
             View all
           </button>
         )}
       </div>
 
       {recent.length === 0 ? (
-        <p className="text-sm text-white/40 text-center py-6">No expenses yet. Tap Add Expense below.</p>
+        <p className="text-sm text-[var(--theme-text-muted)] text-center py-6">
+          Add your first expense with the button below
+        </p>
       ) : (
         <div className="space-y-3">
           {recent.map((exp) => (
@@ -27,8 +29,8 @@ export default function RecentExpenses({ expenses, onViewAll }) {
                 {exp.categories?.icon || '💳'}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-white truncate">{exp.name}</p>
-                <p className="text-xs text-white/40">
+                <p className="text-sm font-medium text-[var(--theme-text-on-primary)] truncate">{exp.name}</p>
+                <p className="text-xs text-[var(--theme-text-muted)]">
                   {exp.categories?.name || 'Uncategorized'} ·{' '}
                   {new Date(exp.date + 'T00:00:00').toLocaleDateString('en-SG', {
                     day: 'numeric',
@@ -36,7 +38,7 @@ export default function RecentExpenses({ expenses, onViewAll }) {
                   })}
                 </p>
               </div>
-              <p className="text-sm font-semibold text-accent-red/90">{formatSGD(exp.amount)}</p>
+              <p className="text-sm font-semibold text-[var(--theme-text-on-primary)]">{formatSGD(exp.amount)}</p>
             </div>
           ))}
         </div>
