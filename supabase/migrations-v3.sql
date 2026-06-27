@@ -1,4 +1,5 @@
 -- Pfinance Spec v3 — run in Supabase SQL Editor
+-- Safe to re-run: uses IF NOT EXISTS / DROP IF EXISTS
 
 ALTER TABLE categories ADD COLUMN IF NOT EXISTS last_month_spent numeric DEFAULT 0;
 ALTER TABLE categories ADD COLUMN IF NOT EXISTS sort_order integer DEFAULT 0;
@@ -17,5 +18,7 @@ CREATE TABLE IF NOT EXISTS user_stats (
 );
 
 ALTER TABLE user_stats ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users own their stats" ON user_stats;
 CREATE POLICY "Users own their stats" ON user_stats FOR ALL
   USING (auth.uid() = user_id) WITH CHECK (auth.uid() = user_id);

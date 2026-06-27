@@ -155,6 +155,7 @@ function AppContent() {
             expenses={finance.expenses}
             categories={finance.categories}
             onAddExpense={handleAddExpense}
+            onUpdateExpense={finance.updateExpense}
             onDeleteExpense={finance.deleteExpense}
           />
         )}

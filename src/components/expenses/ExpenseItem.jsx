@@ -1,6 +1,6 @@
 import { formatSGD } from '../../lib/utils'
 
-export default function ExpenseItem({ expense, onDelete }) {
+export default function ExpenseItem({ expense, onEdit, onDelete }) {
   const handleDelete = () => {
     if (window.confirm(`Delete "${expense.name}"?`)) {
       onDelete(expense.id)
@@ -15,9 +15,10 @@ export default function ExpenseItem({ expense, onDelete }) {
       >
         {expense.categories?.icon || '💳'}
       </div>
+
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-white truncate">{expense.name}</p>
-        <p className="text-xs text-white/40">
+        <p className="text-sm font-medium text-[var(--theme-text-on-primary)] truncate">{expense.name}</p>
+        <p className="text-xs text-[var(--theme-text-muted)] truncate">
           {expense.categories?.name || 'Uncategorized'} ·{' '}
           {new Date(expense.date + 'T00:00:00').toLocaleDateString('en-SG', {
             weekday: 'short',
@@ -27,15 +28,27 @@ export default function ExpenseItem({ expense, onDelete }) {
           {expense.note && ` · ${expense.note}`}
         </p>
       </div>
-      <div className="flex items-center gap-3 flex-shrink-0">
-        <p className="text-sm font-bold text-accent-red/90">{formatSGD(expense.amount)}</p>
-        <button
-          onClick={handleDelete}
-          className="w-8 h-8 flex items-center justify-center rounded-lg text-white/40 hover:text-accent-red hover:bg-accent-red/10 transition-colors"
-          aria-label="Delete expense"
-        >
-          ✕
-        </button>
+
+      <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+        <p className="text-sm font-bold text-[var(--theme-text-on-primary)]">{formatSGD(expense.amount)}</p>
+        <div className="flex items-center gap-0.5">
+          <button
+            type="button"
+            onClick={() => onEdit(expense)}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-accent)] hover:bg-white/10 transition-colors"
+            aria-label="Edit expense"
+          >
+            ✏️
+          </button>
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-amber-400 hover:bg-white/10 transition-colors"
+            aria-label="Delete expense"
+          >
+            ✕
+          </button>
+        </div>
       </div>
     </div>
   )

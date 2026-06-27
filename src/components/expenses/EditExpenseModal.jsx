@@ -1,65 +1,27 @@
-import { useRef, useState } from 'react'
-import { useToast } from '../layout/Toast'
-import { scanReceipt, matchCategoryId } from '../../lib/receiptScanner'
+import { useEffect, useState } from 'react'
 
-export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit }) {
-  const { showToast } = useToast()
-  const fileInputRef = useRef(null)
-  const today = new Date().toISOString().split('T')[0]
+export default function EditExpenseModal({ isOpen, expense, categories, onClose, onSubmit }) {
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
-  const [categoryId, setCategoryId] = useState(categories[0]?.id || '')
-  const [date, setDate] = useState(today)
+  const [categoryId, setCategoryId] = useState('')
+  const [date, setDate] = useState('')
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [scanning, setScanning] = useState(false)
-  const [thumbnail, setThumbnail] = useState(null)
   const [error, setError] = useState('')
 
-  const resetForm = () => {
-    setName('')
-    setAmount('')
-    setCategoryId(categories[0]?.id || '')
-    setDate(today)
-    setNote('')
-    setThumbnail(null)
+  useEffect(() => {
+    if (!expense) return
+    setName(expense.name || '')
+    setAmount(String(expense.amount ?? ''))
+    setCategoryId(expense.category_id || categories[0]?.id || '')
+    setDate(expense.date || '')
+    setNote(expense.note || '')
     setError('')
-  }
+  }, [expense, categories])
 
   const handleClose = () => {
-    resetForm()
-    onClose()
-  }
-
-  const handleScanClick = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileSelect = async (e) => {
-    const file = e.target.files?.[0]
-    e.target.value = ''
-    if (!file) return
-
-    setScanning(true)
     setError('')
-
-    try {
-      const result = await scanReceipt(file)
-      setName(result.merchant)
-      setAmount(String(result.amount))
-      if (result.date) {
-        const parsed = new Date(result.date + 'T00:00:00')
-        if (!isNaN(parsed.getTime())) {
-          setDate(parsed.toISOString().split('T')[0])
-        }
-      }
-      setCategoryId(matchCategoryId(result.category, categories))
-      setThumbnail(result.thumbnail)
-    } catch {
-      showToast?.("Couldn't read receipt — please fill in manually")
-    } finally {
-      setScanning(false)
-    }
+    onClose()
   }
 
   const handleSubmit = async (e) => {
@@ -77,23 +39,22 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
     setError('')
 
     try {
-      await onSubmit({
+      await onSubmit(expense.id, {
         name: name.trim(),
         amount: Number(amount),
         category_id: categoryId || null,
         date,
         note: note.trim() || null,
       })
-      resetForm()
       onClose()
     } catch (err) {
-      setError(err.message || 'Failed to add expense')
+      setError(err.message || 'Failed to update expense')
     } finally {
       setSubmitting(false)
     }
   }
 
-  if (!isOpen) return null
+  if (!isOpen || !expense) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
@@ -103,43 +64,7 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
         style={{ background: 'var(--theme-primary-light)' }}
       >
         <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-6" />
-        <h2 className="text-xl font-bold text-[var(--theme-text-on-primary)] mb-4">Add expense</h2>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={handleFileSelect}
-        />
-
-        <button
-          type="button"
-          onClick={handleScanClick}
-          disabled={scanning}
-          className="w-full mb-4 py-3 rounded-xl border border-white/20 text-[var(--theme-text-on-primary)] font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          📷 Scan Receipt
-        </button>
-
-        {scanning && (
-          <div className="flex items-center justify-center gap-2 mb-4 text-sm text-[var(--theme-text-muted)]">
-            <span className="w-4 h-4 border-2 border-[var(--theme-accent)] border-t-transparent rounded-full animate-spin" />
-            Scanning receipt...
-          </div>
-        )}
-
-        {thumbnail && !scanning && (
-          <div className="mb-4 flex items-center gap-3">
-            <img
-              src={thumbnail}
-              alt="Scanned receipt"
-              className="w-16 h-16 rounded-lg object-cover border border-white/20"
-            />
-            <p className="text-xs text-[var(--theme-text-muted)]">Receipt scanned — review details below</p>
-          </div>
-        )}
+        <h2 className="text-xl font-bold text-[var(--theme-text-on-primary)] mb-6">Edit expense</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -209,11 +134,11 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
 
           <button
             type="submit"
-            disabled={submitting || scanning}
+            disabled={submitting}
             className="w-full py-3.5 font-semibold rounded-2xl disabled:opacity-50 text-[var(--theme-primary)]"
             style={{ background: 'var(--theme-accent)' }}
           >
-            {submitting ? 'Adding...' : 'Add expense'}
+            {submitting ? 'Saving...' : 'Save changes'}
           </button>
         </form>
       </div>

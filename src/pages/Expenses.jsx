@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react'
 import TopBar from '../components/layout/TopBar'
 import ExpenseList from '../components/expenses/ExpenseList'
 import AddExpenseModal from '../components/expenses/AddExpenseModal'
+import EditExpenseModal from '../components/expenses/EditExpenseModal'
 import AddExpenseFab from '../components/expenses/AddExpenseFab'
+import { useToast } from '../components/layout/Toast'
 
 export default function Expenses({
   monthKey,
@@ -10,11 +12,14 @@ export default function Expenses({
   expenses,
   categories,
   onAddExpense,
+  onUpdateExpense,
   onDeleteExpense,
 }) {
+  const { showToast } = useToast()
   const [search, setSearch] = useState('')
   const [filterCategory, setFilterCategory] = useState('all')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editingExpense, setEditingExpense] = useState(null)
 
   const filtered = useMemo(() => {
     return expenses.filter((exp) => {
@@ -27,6 +32,11 @@ export default function Expenses({
     })
   }, [expenses, search, filterCategory])
 
+  const handleUpdateExpense = async (id, data) => {
+    await onUpdateExpense(id, data)
+    showToast?.('Expense updated')
+  }
+
   return (
     <div className="app-shell pb-28">
       <TopBar monthKey={monthKey} onMonthChange={onMonthChange} />
@@ -37,7 +47,7 @@ export default function Expenses({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search expenses..."
-          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent-blue/40"
+          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-[var(--theme-text-on-primary)] placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--theme-accent)]/30"
         />
       </div>
 
@@ -46,8 +56,8 @@ export default function Expenses({
           onClick={() => setFilterCategory('all')}
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
             filterCategory === 'all'
-              ? 'bg-white/20 text-white border-white/30'
-              : 'bg-white/5 text-white/70 border-white/15'
+              ? 'bg-white/20 text-[var(--theme-text-on-primary)] border-white/30'
+              : 'bg-white/5 text-[var(--theme-text-muted)] border-white/15'
           }`}
         >
           All
@@ -58,8 +68,8 @@ export default function Expenses({
             onClick={() => setFilterCategory(cat.id)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
               filterCategory === cat.id
-                ? 'bg-white/20 text-white border-white/30'
-                : 'bg-white/5 text-white/70 border-white/15'
+                ? 'bg-white/20 text-[var(--theme-text-on-primary)] border-white/30'
+                : 'bg-white/5 text-[var(--theme-text-muted)] border-white/15'
             }`}
           >
             {cat.icon} {cat.name}
@@ -70,6 +80,7 @@ export default function Expenses({
       <div className="px-4">
         <ExpenseList
           expenses={filtered}
+          onEdit={setEditingExpense}
           onDelete={onDeleteExpense}
           emptyMessage={
             search || filterCategory !== 'all'
@@ -86,6 +97,14 @@ export default function Expenses({
         onClose={() => setShowAddModal(false)}
         categories={categories}
         onSubmit={onAddExpense}
+      />
+
+      <EditExpenseModal
+        isOpen={!!editingExpense}
+        expense={editingExpense}
+        categories={categories}
+        onClose={() => setEditingExpense(null)}
+        onSubmit={handleUpdateExpense}
       />
     </div>
   )

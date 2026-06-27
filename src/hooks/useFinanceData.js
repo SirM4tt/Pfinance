@@ -173,6 +173,32 @@ export function useFinanceData(userId, monthKey, enabled = true) {
     setData((prev) => ({ ...prev, expenses: prev.expenses.filter((e) => e.id !== id) }))
   }
 
+  const updateExpense = async (id, { name, amount, category_id, date, note }) => {
+    const { data: row, error } = await supabase
+      .from('expenses')
+      .update({
+        name,
+        amount: Number(amount),
+        category_id: category_id || null,
+        date,
+        note: note || null,
+      })
+      .eq('id', id)
+      .select('*, categories(id, name, color, icon, budget_limit)')
+      .single()
+    if (error) throw error
+
+    const { start, end } = getMonthDateRange(monthKey)
+    setData((prev) => {
+      const expenses = prev.expenses
+        .map((e) => (e.id === id ? row : e))
+        .filter((e) => e.date >= start && e.date <= end)
+        .sort((a, b) => b.date.localeCompare(a.date) || (b.created_at || '').localeCompare(a.created_at || ''))
+      return { ...prev, expenses }
+    })
+    return row
+  }
+
   const addSource = async ({ name, amount }) => {
     const { data: row, error } = await supabase
       .from('income_sources')
@@ -295,6 +321,7 @@ export function useFinanceData(userId, monthKey, enabled = true) {
     chartData,
     setIncome,
     addExpense,
+    updateExpense,
     deleteExpense,
     addSource,
     updateSource,
