@@ -18,13 +18,17 @@ export default function BottomNav({ activeTab, onTabChange }) {
               onClick={() => onTabChange(tab.id)}
               className="flex-1 flex flex-col items-center py-2.5 gap-0.5"
             >
-              <span className={`text-xl leading-none ${isActive ? '' : 'opacity-40'}`}>
+              <span
+                className="text-xl leading-none transition-opacity"
+                style={{ opacity: isActive ? 1 : 0.45 }}
+              >
                 {tab.icon}
               </span>
               <span
-                className={`text-[10px] font-medium ${
-                  isActive ? 'text-[var(--theme-text-on-primary)]' : 'text-[var(--theme-text-muted)]'
-                }`}
+                className="text-[10px] font-medium"
+                style={{
+                  color: isActive ? 'var(--theme-text-on-primary)' : 'var(--theme-nav-inactive)',
+                }}
               >
                 {tab.label}
               </span>

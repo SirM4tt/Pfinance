@@ -109,7 +109,7 @@ export default function Budget({
                       value={budgetInput}
                       onChange={(e) => setBudgetInput(e.target.value)}
                       placeholder="S$"
-                      className="w-24 px-2 py-1 text-sm rounded-lg bg-white/10 border border-white/20 text-[var(--theme-text-on-primary)]"
+                      className="w-24 px-2 py-1 text-sm theme-input"
                       autoFocus
                     />
                     <button
@@ -122,7 +122,7 @@ export default function Budget({
                 ) : (
                   <button
                     onClick={() => startEdit(cat)}
-                    className="text-sm font-medium text-[var(--theme-accent-secondary)] px-3 py-1 rounded-lg hover:bg-white/10"
+                    className="text-sm font-medium theme-accent-text px-3 py-1 rounded-lg theme-btn-ghost"
                   >
                     {limit > 0 ? 'Edit' : 'Set'}
                   </button>
@@ -131,7 +131,7 @@ export default function Budget({
 
               {limit > 0 && (
                 <>
-                  <div className="h-2 bg-white/10 rounded-full overflow-hidden mb-1">
+                  <div className="h-2 theme-progress-track rounded-full overflow-hidden mb-1">
                     <div
                       className={`h-full rounded-full transition-all ${getBudgetBarColor(percent)}`}
                       style={{ width: `${Math.min(percent, 100)}%` }}

@@ -3,7 +3,7 @@ import ExpenseItem from './ExpenseItem'
 export default function ExpenseList({ expenses, onEdit, onDelete, emptyMessage }) {
   if (!expenses.length) {
     return (
-      <div className="text-center py-12 text-white/40 text-sm">
+      <div className="text-center py-12 theme-muted text-sm">
         {emptyMessage || 'No expenses found'}
       </div>
     )

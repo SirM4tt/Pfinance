@@ -13,43 +13,46 @@ export default function SplurgeGoalCard({ goal, onAddContribution, onEdit, onDel
     <div className="glass-card p-5">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h3 className="text-lg font-semibold text-white">
+          <h3 className="text-lg font-semibold theme-heading">
             {goal.emoji} {goal.name}
           </h3>
           {goal.description && (
-            <p className="text-sm text-white/50 mt-0.5">{goal.description}</p>
+            <p className="text-sm theme-muted mt-0.5">{goal.description}</p>
           )}
         </div>
         <button
           onClick={() => onDelete(goal.id)}
-          className="text-white/30 hover:text-accent-red text-sm px-2"
+          className="theme-muted hover:text-[var(--theme-error)] text-sm px-2 transition-colors"
         >
           ✕
         </button>
       </div>
 
-      <p className="text-white/80 mb-2">
+      <p className="theme-heading mb-2 text-sm">
         {formatSGD(goal.saved)} of {formatSGD(goal.target_amount)}
       </p>
 
-      <div className="h-2.5 bg-white/10 rounded-full overflow-hidden mb-2">
+      <div className="h-2.5 theme-progress-track rounded-full overflow-hidden mb-2">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-accent-purple to-accent-blue transition-all"
-          style={{ width: `${percent}%` }}
+          className="h-full rounded-full theme-progress-fill transition-all"
+          style={{
+            width: `${percent}%`,
+            background: 'linear-gradient(90deg, var(--theme-accent), var(--theme-accent-secondary))',
+          }}
         />
       </div>
-      <p className="text-xs text-white/50 mb-3">{Math.round(percent)}% · Target: {formatTargetMonth(goal.target_date)}</p>
+      <p className="text-xs theme-muted mb-3">{Math.round(percent)}% · Target: {formatTargetMonth(goal.target_date)}</p>
 
       {rec.remaining > 0 && (
-        <div className="glass-card p-3 mb-4 text-sm text-white/70">
-          💡 Top up <span className="font-semibold text-accent-green">{formatSGD(rec.recommended)}/month</span>
+        <div className="glass-card p-3 mb-4 text-sm theme-muted">
+          💡 Top up <span className="font-semibold theme-accent-text">{formatSGD(rec.recommended)}/month</span>
           <br />
-          <span className="text-white/50">to hit your goal on time</span>
+          <span className="theme-muted">to hit your goal on time</span>
         </div>
       )}
 
       {goal.saved >= goal.target_amount && (
-        <div className="glass-card p-3 mb-4 text-sm text-accent-green font-medium">
+        <div className="glass-card p-3 mb-4 text-sm theme-accent-text font-medium">
           🎉 Goal reached! You did it!
         </div>
       )}
@@ -57,13 +60,14 @@ export default function SplurgeGoalCard({ goal, onAddContribution, onEdit, onDel
       <div className="flex gap-2">
         <button
           onClick={() => onAddContribution(goal)}
-          className="flex-1 py-2.5 bg-accent-green/20 text-accent-green rounded-xl text-sm font-medium hover:bg-accent-green/30 transition-colors"
+          className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-colors theme-btn-primary"
+          style={{ background: 'color-mix(in srgb, var(--theme-accent) 20%, transparent)', color: 'var(--theme-accent)' }}
         >
           + Add Contribution
         </button>
         <button
           onClick={() => onEdit(goal)}
-          className="px-4 py-2.5 bg-white/10 text-white/70 rounded-xl text-sm font-medium hover:bg-white/20 transition-colors"
+          className="px-4 py-2.5 theme-btn-secondary text-sm font-medium"
         >
           Edit
         </button>

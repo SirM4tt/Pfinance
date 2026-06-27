@@ -35,7 +35,8 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
           <button
             type="button"
             onClick={() => onEdit(expense)}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-accent)] hover:bg-white/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-accent)] transition-colors"
+            style={{ background: 'transparent' }}
             aria-label="Edit expense"
           >
             ✏️
@@ -43,7 +44,7 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
           <button
             type="button"
             onClick={handleDelete}
-            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-amber-400 hover:bg-white/10 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-error)] transition-colors"
             aria-label="Delete expense"
           >
             ✕

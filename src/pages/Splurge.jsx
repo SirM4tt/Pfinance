@@ -34,20 +34,20 @@ export default function Splurge({ goals, loading, onAddGoal, onUpdateGoal, onDel
   }
 
   return (
-    <div className="pb-28">
+    <div className="app-shell pb-28">
       <div className="header-gradient px-4 pt-6 pb-8">
-        <h1 className="text-2xl font-bold text-white">✨ Splurge Goals</h1>
-        <p className="text-white/60 text-sm mt-1">Your wishlist, made achievable</p>
+        <h1 className="text-2xl font-bold text-[var(--theme-hero-text)]">✨ Splurge Goals</h1>
+        <p className="text-[var(--theme-hero-text-muted)] text-sm mt-1">Your wishlist, made achievable</p>
       </div>
 
       <div className="px-4 -mt-4 space-y-4">
         {loading ? (
-          <p className="text-center text-white/50 py-12">Loading goals...</p>
+          <p className="text-center theme-muted py-12">Loading goals...</p>
         ) : goals.length === 0 ? (
           <div className="glass-card p-8 text-center">
             <p className="text-4xl mb-3">✨</p>
-            <p className="text-white/70 mb-1">No splurge goals yet</p>
-            <p className="text-sm text-[var(--theme-text-muted)]">Create your first Splurge goal to start saving for something exciting</p>
+            <p className="theme-heading mb-1">No splurge goals yet</p>
+            <p className="text-sm theme-muted">Create your first Splurge goal to start saving for something exciting</p>
           </div>
         ) : (
           goals.map((goal) => (

@@ -48,7 +48,7 @@ export default function Settings({
         <div className="glass-card mb-4 overflow-hidden">
           <button
             onClick={() => setShowIncomeModal(true)}
-            className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"
+            className="w-full flex items-center justify-between px-5 py-4 transition-colors hover:opacity-90"
           >
             <div className="text-left">
               <p className="font-medium text-[var(--theme-text-on-primary)]">💰 Monthly income</p>
@@ -76,7 +76,7 @@ export default function Settings({
 
         <button
           onClick={onSignOut}
-          className="w-full py-3.5 font-semibold rounded-2xl transition-colors text-[var(--theme-text-muted)] border border-white/10 hover:bg-white/5"
+          className="w-full py-3.5 font-semibold rounded-2xl transition-colors theme-muted border theme-divider hover:opacity-80"
         >
           🚪 Sign out
         </button>

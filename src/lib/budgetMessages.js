@@ -20,11 +20,11 @@ export function getBudgetMessage(spent, limit, lastMonthSpent = 0) {
 }
 
 export function getBudgetBarColor(percent) {
-  if (percent >= 90) return 'bg-amber-400'
-  return 'bg-[var(--theme-accent)]'
+  if (percent >= 90) return 'theme-progress-warning'
+  return 'theme-progress-fill'
 }
 
 export function getBudgetTextColor(percent) {
-  if (percent >= 90) return 'text-amber-400'
+  if (percent >= 90) return 'text-[var(--theme-warning)]'
   return 'text-[var(--theme-text-muted)]'
 }

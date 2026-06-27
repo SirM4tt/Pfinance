@@ -1,4 +1,4 @@
-/* Base colors — CSS vars with fallbacks */
+/* Theme fallbacks — overridden by applyTheme() */
 html {
   transition: background-color 0.3s ease, color 0.3s ease;
   --theme-primary: #0f0f1a;
@@ -7,10 +7,24 @@ html {
   --theme-accent-secondary: #38bdf8;
   --theme-hero-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
   --theme-text-on-primary: #ffffff;
-  --theme-text-muted: rgba(255, 255, 255, 0.5);
+  --theme-text-muted: rgba(255, 255, 255, 0.55);
+  --theme-hero-text: #ffffff;
+  --theme-hero-text-muted: rgba(255, 255, 255, 0.6);
   --theme-fab-bg: linear-gradient(135deg, #1a1a2e, #16213e);
+  --theme-fab-text: #ffffff;
   --theme-tab-active: #4ade80;
   --theme-card-bg: rgba(255, 255, 255, 0.07);
+  --theme-hero-card-bg: rgba(255, 255, 255, 0.06);
+  --theme-modal-bg: #1a1a2e;
+  --theme-input-bg: rgba(255, 255, 255, 0.1);
+  --theme-surface: rgba(255, 255, 255, 0.1);
+  --theme-border: rgba(255, 255, 255, 0.12);
+  --theme-progress-track: rgba(255, 255, 255, 0.1);
+  --theme-btn-text: #0f0f1a;
+  --theme-warning: #fbbf24;
+  --theme-error: #f87171;
+  --theme-overlay: rgba(0, 0, 0, 0.55);
+  --theme-nav-inactive: rgba(255, 255, 255, 0.38);
 }
 
 html,
@@ -48,7 +62,7 @@ body,
 
   .glass-card {
     background: var(--theme-card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--theme-border);
     border-radius: 20px;
   }
 
@@ -72,13 +86,116 @@ body,
 
   .fab-button {
     background: var(--theme-fab-bg);
-    color: var(--theme-text-on-primary);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: var(--theme-fab-text);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
   }
 
   .bottom-nav {
     background-color: var(--theme-primary);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--theme-border);
+  }
+
+  .theme-modal {
+    background: var(--theme-modal-bg);
+  }
+
+  .theme-input {
+    background: var(--theme-input-bg);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-on-primary);
+    border-radius: 12px;
+  }
+
+  .theme-input::placeholder {
+    color: var(--theme-text-muted);
+    opacity: 0.7;
+  }
+
+  .theme-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 35%, transparent);
+  }
+
+  .theme-btn-primary {
+    background: var(--theme-accent);
+    color: var(--theme-btn-text);
+    font-weight: 600;
+    border-radius: 16px;
+  }
+
+  .theme-btn-gradient {
+    background: linear-gradient(135deg, var(--theme-accent), var(--theme-accent-secondary));
+    color: var(--theme-btn-text);
+    font-weight: 600;
+    border-radius: 16px;
+  }
+
+  .theme-btn-secondary {
+    background: var(--theme-surface);
+    color: var(--theme-text-on-primary);
+    border: 1px solid var(--theme-border);
+    border-radius: 12px;
+  }
+
+  .theme-btn-ghost {
+    color: var(--theme-text-muted);
+    border-radius: 12px;
+  }
+
+  .theme-btn-ghost:hover {
+    background: var(--theme-surface);
+    color: var(--theme-text-on-primary);
+  }
+
+  .theme-label {
+    color: var(--theme-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .theme-heading {
+    color: var(--theme-text-on-primary);
+    font-weight: 700;
+  }
+
+  .theme-muted {
+    color: var(--theme-text-muted);
+  }
+
+  .theme-accent-text {
+    color: var(--theme-accent);
+  }
+
+  .theme-hero-card {
+    background: var(--theme-hero-card-bg);
+    border: 1px solid var(--theme-border);
+  }
+
+  .theme-progress-track {
+    background: var(--theme-progress-track);
+  }
+
+  .theme-progress-fill {
+    background: var(--theme-accent);
+  }
+
+  .theme-progress-warning {
+    background: var(--theme-warning);
+  }
+
+  .theme-pill {
+    background: var(--theme-surface);
+    color: var(--theme-text-muted);
+  }
+
+  .theme-pill-active {
+    background: var(--theme-surface);
+    color: var(--theme-text-on-primary);
+    border: 1px solid var(--theme-border);
+  }
+
+  .theme-divider {
+    border-color: var(--theme-border);
   }
 }
 

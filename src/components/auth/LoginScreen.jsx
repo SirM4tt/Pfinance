@@ -9,17 +9,17 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="min-h-screen login-bg flex flex-col items-center justify-center px-6 text-white">
+    <div className="min-h-screen login-bg flex flex-col items-center justify-center px-6">
       <div className="text-center max-w-sm">
         <div className="w-20 h-20 mx-auto mb-6 rounded-3xl glass-card flex items-center justify-center text-4xl">
           💰
         </div>
         <h1 className="text-4xl font-bold mb-2 gradient-text">Pfinance</h1>
-        <p className="text-white/60 mb-10 text-lg">Track your money. Keep it simple.</p>
+        <p className="theme-muted mb-10 text-lg">Track your money. Keep it simple.</p>
 
         <button
           onClick={handleGoogleSignIn}
-          className="w-full flex items-center justify-center gap-3 glass-card text-white font-semibold py-3.5 px-6 rounded-2xl hover:bg-white/10 transition-colors"
+          className="w-full flex items-center justify-center gap-3 glass-card theme-heading font-semibold py-3.5 px-6 rounded-2xl transition-colors hover:opacity-90"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

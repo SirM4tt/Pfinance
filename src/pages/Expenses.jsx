@@ -47,7 +47,7 @@ export default function Expenses({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search expenses..."
-          className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-[var(--theme-text-on-primary)] placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--theme-accent)]/30"
+          className="w-full px-4 py-3 theme-input"
         />
       </div>
 
@@ -55,9 +55,7 @@ export default function Expenses({
         <button
           onClick={() => setFilterCategory('all')}
           className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
-            filterCategory === 'all'
-              ? 'bg-white/20 text-[var(--theme-text-on-primary)] border-white/30'
-              : 'bg-white/5 text-[var(--theme-text-muted)] border-white/15'
+            filterCategory === 'all' ? 'theme-pill-active' : 'theme-pill'
           }`}
         >
           All
@@ -67,9 +65,7 @@ export default function Expenses({
             key={cat.id}
             onClick={() => setFilterCategory(cat.id)}
             className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border ${
-              filterCategory === cat.id
-                ? 'bg-white/20 text-[var(--theme-text-on-primary)] border-white/30'
-                : 'bg-white/5 text-[var(--theme-text-muted)] border-white/15'
+              filterCategory === cat.id ? 'theme-pill-active' : 'theme-pill'
             }`}
           >
             {cat.icon} {cat.name}
