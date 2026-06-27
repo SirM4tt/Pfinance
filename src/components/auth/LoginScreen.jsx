@@ -11,9 +11,11 @@ export default function LoginScreen() {
   return (
     <div className="min-h-screen login-bg flex flex-col items-center justify-center px-6">
       <div className="text-center max-w-sm">
-        <div className="w-20 h-20 mx-auto mb-6 rounded-3xl glass-card flex items-center justify-center text-4xl">
-          💰
-        </div>
+        <img
+          src="/icons/icon-192.png"
+          alt="Pfinance"
+          className="w-20 h-20 mx-auto mb-6 rounded-3xl shadow-lg"
+        />
         <h1 className="text-4xl font-bold mb-2 gradient-text">Pfinance</h1>
         <p className="theme-muted mb-10 text-lg">Track your money. Keep it simple.</p>
 
