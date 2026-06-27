@@ -43,7 +43,17 @@ export function useUserStats(userId, enabled = true) {
         .single()
       setStats(created ?? DEFAULT_STATS)
     } else {
-      setStats(data)
+      if (data.theme_id === 'gold') {
+        const { data: migrated } = await supabase
+          .from('user_stats')
+          .update({ theme_id: 'matcha' })
+          .eq('user_id', userId)
+          .select()
+          .single()
+        setStats(migrated ?? { ...data, theme_id: 'matcha' })
+      } else {
+        setStats(data)
+      }
     }
     setLoading(false)
   }, [userId, enabled])

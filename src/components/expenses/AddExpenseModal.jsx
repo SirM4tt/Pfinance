@@ -2,9 +2,13 @@ import { useRef, useState } from 'react'
 import { useToast } from '../layout/Toast'
 import { scanReceipt, matchCategoryId } from '../../lib/receiptScanner'
 
+const DISMISS_THRESHOLD = 100
+
 export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit }) {
   const { showToast } = useToast()
   const fileInputRef = useRef(null)
+  const sheetRef = useRef(null)
+  const dragStartY = useRef(null)
   const today = new Date().toISOString().split('T')[0]
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
@@ -15,6 +19,8 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
   const [scanning, setScanning] = useState(false)
   const [thumbnail, setThumbnail] = useState(null)
   const [error, setError] = useState('')
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
 
   const resetForm = () => {
     setName('')
@@ -24,11 +30,33 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
     setNote('')
     setThumbnail(null)
     setError('')
+    setDragY(0)
   }
 
   const handleClose = () => {
     resetForm()
     onClose()
+  }
+
+  const handleDragStart = (clientY) => {
+    dragStartY.current = clientY
+    setIsDragging(true)
+  }
+
+  const handleDragMove = (clientY) => {
+    if (dragStartY.current === null) return
+    const delta = Math.max(0, clientY - dragStartY.current)
+    setDragY(delta)
+  }
+
+  const handleDragEnd = () => {
+    if (dragY >= DISMISS_THRESHOLD) {
+      handleClose()
+    } else {
+      setDragY(0)
+    }
+    dragStartY.current = null
+    setIsDragging(false)
   }
 
   const handleScanClick = () => {
@@ -97,10 +125,42 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <div className="absolute inset-0" style={{ background: 'var(--theme-overlay)' }} onClick={handleClose} />
-      <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 animate-slide-up safe-bottom">
-        <div className="w-10 h-1 rounded-full mx-auto mb-6" style={{ background: 'var(--theme-border)' }} />
-        <h2 className="text-xl font-bold theme-heading mb-4">Add expense</h2>
+      <div
+        className="absolute inset-0"
+        style={{ background: 'var(--theme-overlay)', opacity: 1 - Math.min(dragY / 300, 0.4) }}
+        onClick={handleClose}
+      />
+      <div
+        ref={sheetRef}
+        className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 safe-bottom animate-slide-up"
+        style={{
+          transform: `translateY(${dragY}px)`,
+          transition: isDragging ? 'none' : 'transform 0.25s ease-out',
+        }}
+      >
+        <div
+          className="touch-none -mx-6 px-6 pb-2"
+          onTouchStart={(e) => handleDragStart(e.touches[0].clientY)}
+          onTouchMove={(e) => handleDragMove(e.touches[0].clientY)}
+          onTouchEnd={handleDragEnd}
+        >
+          <div
+            className="w-10 h-1 rounded-full mx-auto mb-4"
+            style={{ background: 'var(--theme-border)' }}
+          />
+
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-bold theme-heading">Add expense</h2>
+            <button
+              type="button"
+              onClick={handleClose}
+              className="w-9 h-9 flex items-center justify-center rounded-full theme-btn-ghost theme-muted text-lg"
+              aria-label="Close"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
 
         <input
           ref={fileInputRef}
@@ -122,7 +182,7 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
         </button>
 
         {scanning && (
-          <div className="flex items-center justify-center gap-2 mb-4 text-sm text-[var(--theme-text-muted)]">
+          <div className="flex items-center justify-center gap-2 mb-4 text-sm theme-muted">
             <span className="w-4 h-4 border-2 border-[var(--theme-accent)] border-t-transparent rounded-full animate-spin" />
             Scanning receipt...
           </div>
@@ -133,9 +193,10 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
             <img
               src={thumbnail}
               alt="Scanned receipt"
-              className="w-16 h-16 rounded-lg object-cover border border-white/20"
+              className="w-16 h-16 rounded-lg object-cover"
+              style={{ border: '1px solid var(--theme-border)' }}
             />
-            <p className="text-xs text-[var(--theme-text-muted)]">Receipt scanned — review details below</p>
+            <p className="text-xs theme-muted">Receipt scanned — review details below</p>
           </div>
         )}
 

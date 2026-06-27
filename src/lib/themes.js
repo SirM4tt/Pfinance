@@ -30,35 +30,37 @@ export const THEMES = {
       '--theme-nav-inactive': 'rgba(255,255,255,0.38)',
     },
   },
-  gold: {
-    id: 'gold',
-    name: 'Royal Gold',
-    preview: ['#1a1200', '#c9a84c', '#fffbea'],
+  matcha: {
+    id: 'matcha',
+    name: 'Matcha',
+    preview: ['#f5f0e8', '#dde8d4', '#5c4d3c'],
     vars: {
-      '--theme-primary': '#1a1200',
-      '--theme-primary-light': '#2d2000',
-      '--theme-accent': '#c9a84c',
-      '--theme-accent-secondary': '#f0d080',
-      '--theme-hero-gradient': 'linear-gradient(135deg, #1a1200 0%, #2d2000 50%, #4a3500 100%)',
-      '--theme-text-on-primary': '#fffbea',
-      '--theme-text-muted': 'rgba(255,251,234,0.55)',
-      '--theme-hero-text': '#fffbea',
-      '--theme-hero-text-muted': 'rgba(255,251,234,0.65)',
-      '--theme-fab-bg': '#c9a84c',
-      '--theme-fab-text': '#1a1200',
-      '--theme-tab-active': '#c9a84c',
-      '--theme-card-bg': 'rgba(201,168,76,0.12)',
-      '--theme-hero-card-bg': 'rgba(201,168,76,0.1)',
-      '--theme-modal-bg': '#2d2000',
-      '--theme-input-bg': 'rgba(201,168,76,0.12)',
-      '--theme-surface': 'rgba(201,168,76,0.15)',
-      '--theme-border': 'rgba(201,168,76,0.22)',
-      '--theme-progress-track': 'rgba(201,168,76,0.18)',
-      '--theme-btn-text': '#1a1200',
-      '--theme-warning': '#f0d080',
-      '--theme-error': '#f87171',
-      '--theme-overlay': 'rgba(0,0,0,0.6)',
-      '--theme-nav-inactive': 'rgba(255,251,234,0.38)',
+      '--theme-primary': '#f5f0e8',
+      '--theme-primary-light': '#f0ebe3',
+      '--theme-accent': '#7d9b6a',
+      '--theme-accent-secondary': '#8b7355',
+      '--theme-hero-gradient': 'linear-gradient(135deg, #c9bba8 0%, #a8957d 100%)',
+      '--theme-text-on-primary': '#5c4d3c',
+      '--theme-text-muted': '#9a8b7a',
+      '--theme-hero-text': '#5c4d3c',
+      '--theme-hero-text-muted': '#8b7355',
+      '--theme-heading-color': '#4a3f35',
+      '--theme-label-color': '#8b7355',
+      '--theme-fab-bg': '#7d9b6a',
+      '--theme-fab-text': '#f5f0e8',
+      '--theme-tab-active': '#7d9b6a',
+      '--theme-card-bg': '#dde8d4',
+      '--theme-hero-card-bg': '#d4e4c8',
+      '--theme-modal-bg': '#faf7f2',
+      '--theme-input-bg': '#faf7f2',
+      '--theme-surface': '#ebe4d8',
+      '--theme-border': 'rgba(74, 63, 53, 0.14)',
+      '--theme-progress-track': 'rgba(74, 63, 53, 0.1)',
+      '--theme-btn-text': '#f5f0e8',
+      '--theme-warning': '#c4956a',
+      '--theme-error': '#c47a6a',
+      '--theme-overlay': 'rgba(74, 63, 53, 0.35)',
+      '--theme-nav-inactive': 'rgba(92, 77, 60, 0.45)',
     },
   },
   pastel: {
@@ -126,10 +128,13 @@ export const THEMES = {
 }
 
 export function applyTheme(themeId) {
-  const theme = THEMES[themeId] || THEMES.navy
+  const resolved = themeId === 'gold' ? 'matcha' : themeId
+  const theme = THEMES[resolved] || THEMES.navy
   Object.entries(theme.vars).forEach(([key, value]) => {
     document.documentElement.style.setProperty(key, value)
   })
-  document.documentElement.style.setProperty('color-scheme', themeId === 'pastel' ? 'light' : 'dark')
+  document.documentElement.dataset.theme = resolved
+  const isLight = resolved === 'pastel' || resolved === 'matcha'
+  document.documentElement.style.setProperty('color-scheme', isLight ? 'light' : 'dark')
   return theme
 }

@@ -10,7 +10,7 @@ export default function ExpenseList({ expenses, onEdit, onDelete, emptyMessage }
   }
 
   return (
-    <div className="glass-card px-4 py-2 divide-y divide-white/5">
+    <div className="glass-card px-4 py-2 divide-y theme-divider overflow-hidden">
       {expenses.map((expense) => (
         <ExpenseItem key={expense.id} expense={expense} onEdit={onEdit} onDelete={onDelete} />
       ))}

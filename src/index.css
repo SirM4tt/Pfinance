@@ -148,13 +148,13 @@ body,
   }
 
   .theme-label {
-    color: var(--theme-text-muted);
+    color: var(--theme-label-color, var(--theme-text-muted));
     font-size: 0.875rem;
     font-weight: 500;
   }
 
   .theme-heading {
-    color: var(--theme-text-on-primary);
+    color: var(--theme-heading-color, var(--theme-text-on-primary));
     font-weight: 700;
   }
 
@@ -168,7 +168,24 @@ body,
 
   .theme-hero-card {
     background: var(--theme-hero-card-bg);
-    border: 1px solid var(--theme-border);
+    border: 1px solid color-mix(in srgb, var(--theme-accent) 22%, var(--theme-border));
+  }
+
+  [data-theme="matcha"] .glass-card {
+    border-color: color-mix(in srgb, var(--theme-accent) 28%, var(--theme-border));
+  }
+
+  [data-theme="matcha"] .theme-hero-card .theme-heading {
+    color: var(--theme-heading-color);
+  }
+
+  [data-theme="matcha"] .header-gradient {
+    background: var(--theme-primary);
+  }
+
+  [data-theme="matcha"] .theme-pill-active {
+    border-color: color-mix(in srgb, var(--theme-accent) 35%, var(--theme-border));
+    color: var(--theme-heading-color);
   }
 
   .theme-progress-track {
