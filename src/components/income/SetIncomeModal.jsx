@@ -36,10 +36,14 @@ export default function SetIncomeModal({ isOpen, onClose, currentIncome, onSubmi
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <div className="absolute inset-0" style={{ background: 'var(--theme-overlay)' }} onClick={handleClose} />
+      <div
+        className="absolute inset-0 animate-fade-in"
+        style={{ background: 'var(--theme-overlay)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+        onClick={handleClose}
+      />
       <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 safe-bottom animate-slide-up">
-        <div className="w-10 h-1 rounded-full mx-auto mb-6" style={{ background: 'var(--theme-border)' }} />
-        <h2 className="text-xl font-bold theme-heading mb-2">Monthly income</h2>
+        <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'var(--theme-border)' }} />
+        <h2 className="text-xl font-bold theme-heading font-display mb-2">Monthly income</h2>
         <p className="text-sm theme-muted mb-6">Set your primary salary for this month</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -54,7 +58,7 @@ export default function SetIncomeModal({ isOpen, onClose, currentIncome, onSubmi
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-10 pr-4 py-3 theme-input text-2xl font-semibold"
+                className="w-full pl-10 pr-4 py-3 theme-input text-2xl font-bold num"
               />
             </div>
             {currentIncome > 0 && (

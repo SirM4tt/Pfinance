@@ -66,10 +66,14 @@ export default function AddGoalModal({ isOpen, onClose, onSubmit, editGoal }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <div className="absolute inset-0" style={{ background: 'var(--theme-overlay)' }} onClick={onClose} />
-      <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 animate-slide-up safe-bottom max-h-[90vh] overflow-y-auto">
-        <div className="w-10 h-1 rounded-full mx-auto mb-6" style={{ background: 'var(--theme-border)' }} />
-        <h2 className="text-xl font-bold theme-heading mb-6">
+      <div
+        className="absolute inset-0 animate-fade-in"
+        style={{ background: 'var(--theme-overlay)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 animate-slide-up safe-bottom max-h-[90vh] overflow-y-auto scrollbar-hide">
+        <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'var(--theme-border)' }} />
+        <h2 className="text-xl font-bold theme-heading font-display mb-6">
           {editGoal ? 'Edit Splurge Goal' : 'New Splurge Goal'}
         </h2>
 

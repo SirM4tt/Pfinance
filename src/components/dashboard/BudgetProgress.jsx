@@ -1,5 +1,6 @@
 import { formatSGD } from '../../lib/utils'
 import { getBudgetMessage, getBudgetBarColor, getBudgetTextColor } from '../../lib/budgetMessages'
+import { CategoryChip } from '../icons/Icon'
 
 export default function BudgetProgress({ categories, expenses, limit = 3 }) {
   const spentByCategory = {}
@@ -23,31 +24,32 @@ export default function BudgetProgress({ categories, expenses, limit = 3 }) {
 
   if (!withBudget.length) {
     return (
-      <div className="mx-4 mt-4 glass-card p-6">
-        <h2 className="text-lg font-semibold theme-heading mb-2">Budget progress</h2>
+      <div className="mx-4 mt-4 glass-card p-6 reveal" style={{ '--delay': '0.16s' }}>
+        <h2 className="text-lg font-semibold font-display theme-heading mb-2">Budget progress</h2>
         <p className="text-sm theme-muted">Set category budgets in the Budget tab</p>
       </div>
     )
   }
 
   return (
-    <div className="mx-4 mt-4 glass-card p-6">
-      <h2 className="text-lg font-semibold theme-heading mb-4">Budget progress</h2>
+    <div className="mx-4 mt-4 glass-card p-6 reveal" style={{ '--delay': '0.16s' }}>
+      <h2 className="text-lg font-semibold font-display theme-heading mb-4">Budget progress</h2>
       <div className="space-y-4">
-        {withBudget.map((cat) => (
+        {withBudget.map((cat, i) => (
           <div key={cat.id}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium theme-heading">
-                {cat.icon} {cat.name}
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="flex items-center gap-2 text-sm font-medium theme-heading">
+                <CategoryChip icon={cat.icon} color={cat.color} size={26} iconSize={13} className="!rounded-lg" />
+                {cat.name}
               </span>
-              <span className={`text-xs font-medium ${getBudgetTextColor(cat.percent)}`}>
+              <span className={`text-xs font-medium num ${getBudgetTextColor(cat.percent)}`}>
                 {formatSGD(cat.spent)} / {formatSGD(cat.limit)}
               </span>
             </div>
             <div className="h-2 theme-progress-track rounded-full overflow-hidden mb-1">
               <div
-                className={`h-full rounded-full transition-all ${getBudgetBarColor(cat.percent)}`}
-                style={{ width: `${Math.min(cat.percent, 100)}%` }}
+                className={`h-full rounded-full animate-bar-fill ${getBudgetBarColor(cat.percent)}`}
+                style={{ width: `${Math.min(cat.percent, 100)}%`, animationDelay: `${0.2 + i * 0.12}s` }}
               />
             </div>
             {cat.message && (

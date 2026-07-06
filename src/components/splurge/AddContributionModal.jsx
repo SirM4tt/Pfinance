@@ -63,10 +63,14 @@ export default function AddContributionModal({ isOpen, onClose, goal, onSubmit }
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
-      <div className="absolute inset-0" style={{ background: 'var(--theme-overlay)' }} onClick={onClose} />
-      <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 animate-slide-up safe-bottom max-h-[90vh] overflow-y-auto">
-        <div className="w-10 h-1 rounded-full mx-auto mb-6" style={{ background: 'var(--theme-border)' }} />
-        <h2 className="text-xl font-bold theme-heading mb-1">Add Contribution</h2>
+      <div
+        className="absolute inset-0 animate-fade-in"
+        style={{ background: 'var(--theme-overlay)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+        onClick={onClose}
+      />
+      <div className="relative w-full max-w-lg theme-modal rounded-t-3xl p-6 pb-8 animate-slide-up safe-bottom max-h-[90vh] overflow-y-auto scrollbar-hide">
+        <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'var(--theme-border)' }} />
+        <h2 className="text-xl font-bold theme-heading font-display mb-1">Add Contribution</h2>
         <p className="text-sm theme-muted mb-6">{goal.emoji} {goal.name}</p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -74,7 +78,7 @@ export default function AddContributionModal({ isOpen, onClose, goal, onSubmit }
             <label className="block theme-label mb-1">Amount (SGD)</label>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 theme-muted">S$</span>
-              <input type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full pl-10 pr-4 py-3 theme-input text-xl font-semibold" />
+              <input type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full pl-10 pr-4 py-3 theme-input text-xl font-bold num" />
             </div>
           </div>
 
