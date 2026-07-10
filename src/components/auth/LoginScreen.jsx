@@ -11,17 +11,24 @@ export default function LoginScreen() {
   return (
     <div className="min-h-screen login-bg flex flex-col items-center justify-center px-6">
       <div className="text-center max-w-sm">
-        <img
-          src="/icons/icon-192.png"
-          alt="Pfinance"
-          className="w-20 h-20 mx-auto mb-6 rounded-3xl shadow-lg"
-        />
-        <h1 className="text-4xl font-bold mb-2 gradient-text">Pfinance</h1>
-        <p className="theme-muted mb-10 text-lg">Track your money. Keep it simple.</p>
+        <div className="relative inline-block mb-6 reveal-scale">
+          <div
+            className="absolute inset-0 rounded-3xl animate-glow-pulse"
+            style={{ boxShadow: '0 0 60px var(--theme-glow)' }}
+          />
+          <img
+            src="/icons/icon-192.png"
+            alt="Pfinance"
+            className="relative w-20 h-20 mx-auto rounded-3xl shadow-lg"
+          />
+        </div>
+        <h1 className="text-4xl font-bold font-display mb-2 gradient-text reveal" style={{ '--delay': '0.1s' }}>Pfinance</h1>
+        <p className="theme-muted mb-10 text-lg reveal" style={{ '--delay': '0.18s' }}>Track your money. Keep it simple.</p>
 
         <button
           onClick={handleGoogleSignIn}
-          className="w-full flex items-center justify-center gap-3 glass-card theme-heading font-semibold py-3.5 px-6 rounded-2xl transition-colors hover:opacity-90"
+          className="w-full flex items-center justify-center gap-3 glass-card theme-heading font-semibold py-3.5 px-6 rounded-2xl transition-colors hover:opacity-90 pressable reveal"
+          style={{ '--delay': '0.26s' }}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />

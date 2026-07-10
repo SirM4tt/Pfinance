@@ -14,6 +14,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { COLOR_SWATCHES, CATEGORY_EMOJIS } from '../../lib/categoryColors'
+import Icon from '../icons/Icon'
 
 function SortableCategoryRow({ cat, onUpdate, onDelete }) {
   const [editingName, setEditingName] = useState(false)
@@ -45,12 +46,12 @@ function SortableCategoryRow({ cat, onUpdate, onDelete }) {
       <div className="flex items-center gap-2 px-4 py-3 border-b border-white/10">
         <button
           type="button"
-          className="touch-none text-white/30 text-lg px-1"
+          className="touch-none theme-muted opacity-60 px-1"
           aria-label="Drag to reorder"
           {...attributes}
           {...listeners}
         >
-          ⠿
+          <Icon name="grip-vertical" size={16} />
         </button>
 
         <button
@@ -173,9 +174,14 @@ export default function CategoryEditor({ categories, onUpdate, onDelete, onReord
   }
 
   return (
-    <div className="glass-card mb-4 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-        <p className="font-medium text-[var(--theme-text-on-primary)]">📂 Categories</p>
+    <div className="glass-card mb-4 overflow-hidden reveal" style={{ '--delay': '0.2s' }}>
+      <div className="flex items-center justify-between px-5 py-4 border-b theme-divider">
+        <p className="font-medium text-[var(--theme-text-on-primary)] flex items-center gap-3">
+          <span className="icon-chip w-10 h-10 theme-accent-text" style={{ background: 'color-mix(in srgb, var(--theme-accent) 14%, transparent)' }}>
+            <Icon name="folder" size={19} />
+          </span>
+          Categories
+        </p>
         <button
           type="button"
           onClick={() => setShowAdd(!showAdd)}

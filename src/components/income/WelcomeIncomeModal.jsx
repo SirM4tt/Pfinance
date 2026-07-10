@@ -31,13 +31,13 @@ export default function WelcomeIncomeModal({ isOpen, monthKey, onSubmit }) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center login-bg px-6">
       <div className="w-full max-w-sm text-center">
-        <div className="text-5xl mb-6">👋</div>
-        <h1 className="text-3xl font-bold mb-3 gradient-text">Welcome to Pfinance</h1>
-        <p className="theme-muted mb-8 text-lg leading-relaxed">
+        <div className="text-5xl mb-6 reveal-scale">👋</div>
+        <h1 className="text-3xl font-bold font-display mb-3 gradient-text reveal" style={{ '--delay': '0.08s' }}>Welcome to Pfinance</h1>
+        <p className="theme-muted mb-8 text-lg leading-relaxed reveal" style={{ '--delay': '0.16s' }}>
           Let&apos;s start by setting your monthly income
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 reveal" style={{ '--delay': '0.24s' }}>
           <div className="glass-card p-6">
             <label className="block text-sm theme-muted mb-2 text-left">Monthly income</label>
             <div className="relative">
@@ -50,7 +50,7 @@ export default function WelcomeIncomeModal({ isOpen, monthKey, onSubmit }) {
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
                 autoFocus
-                className="w-full pl-12 pr-4 py-4 theme-input text-2xl font-semibold"
+                className="w-full pl-12 pr-4 py-4 theme-input text-2xl font-bold num"
               />
             </div>
             <p className="text-sm theme-muted mt-3 text-left">

@@ -3,6 +3,7 @@ import TopBar from '../components/layout/TopBar'
 import IncomeSourcesSection from '../components/income/IncomeSourcesSection'
 import { getBudgetMessage, getBudgetBarColor } from '../lib/budgetMessages'
 import { formatSGD } from '../lib/utils'
+import { CategoryChip } from '../components/icons/Icon'
 
 export default function Budget({
   monthKey,
@@ -59,42 +60,37 @@ export default function Budget({
         onEditPrimary={onEditPrimary}
       />
 
-      <div className="mx-4 mb-6 glass-card p-5">
+      <div className="mx-4 mb-6 glass-card p-5 reveal" style={{ '--delay': '0.06s' }}>
         <p className="text-[var(--theme-text-muted)] text-sm mb-3">Monthly summary</p>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-[var(--theme-text-muted)] uppercase">Total budget</p>
-            <p className="text-xl font-bold text-[var(--theme-text-on-primary)]">{formatSGD(totalBudget)}</p>
+            <p className="text-[11px] text-[var(--theme-text-muted)] uppercase tracking-wider">Total budget</p>
+            <p className="text-xl font-bold text-[var(--theme-text-on-primary)] num">{formatSGD(totalBudget)}</p>
           </div>
           <div>
-            <p className="text-xs text-[var(--theme-text-muted)] uppercase">Total spent</p>
-            <p className="text-xl font-bold text-[var(--theme-text-on-primary)]">{formatSGD(totalSpent)}</p>
+            <p className="text-[11px] text-[var(--theme-text-muted)] uppercase tracking-wider">Total spent</p>
+            <p className="text-xl font-bold text-[var(--theme-text-on-primary)] num">{formatSGD(totalSpent)}</p>
           </div>
         </div>
       </div>
 
       <div className="px-4 space-y-3">
-        <h2 className="text-lg font-semibold text-[var(--theme-text-on-primary)] mb-2 px-1">Category budgets</h2>
+        <h2 className="text-lg font-semibold font-display text-[var(--theme-text-on-primary)] mb-2 px-1 reveal" style={{ '--delay': '0.1s' }}>Category budgets</h2>
 
-        {categories.map((cat) => {
+        {categories.map((cat, i) => {
           const spent = spentByCategory[cat.id] || 0
           const limit = Number(cat.budget_limit) || 0
           const percent = limit > 0 ? (spent / limit) * 100 : 0
           const message = limit > 0 ? getBudgetMessage(spent, limit, Number(cat.last_month_spent) || 0) : null
 
           return (
-            <div key={cat.id} className="glass-card p-4">
+            <div key={cat.id} className="glass-card p-4 reveal" style={{ '--delay': `${0.12 + i * 0.05}s` }}>
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg"
-                    style={{ backgroundColor: `${cat.color}30` }}
-                  >
-                    {cat.icon}
-                  </span>
+                <div className="flex items-center gap-2.5">
+                  <CategoryChip icon={cat.icon} color={cat.color} size={40} iconSize={18} />
                   <div>
                     <p className="font-medium text-[var(--theme-text-on-primary)]">{cat.name}</p>
-                    <p className="text-xs text-[var(--theme-text-muted)]">
+                    <p className="text-xs text-[var(--theme-text-muted)] num">
                       {limit > 0 ? `${formatSGD(spent)} of ${formatSGD(limit)}` : 'No budget set'}
                     </p>
                   </div>
@@ -133,8 +129,8 @@ export default function Budget({
                 <>
                   <div className="h-2 theme-progress-track rounded-full overflow-hidden mb-1">
                     <div
-                      className={`h-full rounded-full transition-all ${getBudgetBarColor(percent)}`}
-                      style={{ width: `${Math.min(percent, 100)}%` }}
+                      className={`h-full rounded-full animate-bar-fill ${getBudgetBarColor(percent)}`}
+                      style={{ width: `${Math.min(percent, 100)}%`, animationDelay: `${0.2 + i * 0.08}s` }}
                     />
                   </div>
                   {message && (

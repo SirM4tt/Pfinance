@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { formatSGD } from '../../lib/utils'
+import Icon from '../icons/Icon'
 
 export default function IncomeSourcesSection({
   primaryIncome,
@@ -39,13 +40,18 @@ export default function IncomeSourcesSection({
   }
 
   return (
-    <div className="mx-4 mb-6 glass-card overflow-hidden">
+    <div className="mx-4 mb-6 glass-card overflow-hidden reveal">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-5 py-4 text-left"
       >
-        <h2 className="text-lg font-semibold theme-heading">Income Sources</h2>
-        <span className="theme-muted text-sm">{expanded ? '▼' : '▶'}</span>
+        <h2 className="text-lg font-semibold font-display theme-heading">Income Sources</h2>
+        <span
+          className="theme-muted transition-transform duration-300"
+          style={{ transform: expanded ? 'rotate(0deg)' : 'rotate(-90deg)' }}
+        >
+          <Icon name="chevron-down" size={18} />
+        </span>
       </button>
 
       {expanded && (
@@ -85,7 +91,7 @@ export default function IncomeSourcesSection({
 
           <div className="border-t theme-divider pt-3 flex items-center justify-between mb-4">
             <span className="font-medium theme-heading">Total income</span>
-            <span className="text-xl font-bold gradient-text">{formatSGD(totalIncome)}</span>
+            <span className="text-xl font-bold gradient-text num">{formatSGD(totalIncome)}</span>
           </div>
 
           {showAdd ? (

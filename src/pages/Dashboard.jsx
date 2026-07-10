@@ -75,8 +75,8 @@ export default function Dashboard({
       />
 
       {showStreakInfo && stats?.current_streak > 0 && (
-        <div className="mx-4 mb-2 glass-card p-4 text-sm text-[var(--theme-text-muted)]">
-          <p>🔥 {stats.current_streak} months under budget</p>
+        <div className="mx-4 mb-2 glass-card p-4 text-sm text-[var(--theme-text-muted)] animate-fade-in">
+          <p>{stats.current_streak} months under budget — keep the flame alive</p>
           {stats.longest_streak > stats.current_streak && (
             <p className="mt-1">Best streak: {stats.longest_streak} months</p>
           )}

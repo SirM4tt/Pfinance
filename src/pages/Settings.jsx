@@ -3,6 +3,7 @@ import SetIncomeModal from '../components/income/SetIncomeModal'
 import ThemePicker from '../components/settings/ThemePicker'
 import CategoryEditor from '../components/settings/CategoryEditor'
 import { formatSGD } from '../lib/utils'
+import Icon from '../components/icons/Icon'
 
 export default function Settings({
   user,
@@ -26,9 +27,9 @@ export default function Settings({
   return (
     <div className="pb-28">
       <div className="px-4 py-6">
-        <h1 className="text-2xl font-bold text-[var(--theme-text-on-primary)] mb-6">Settings</h1>
+        <h1 className="text-2xl font-bold font-display text-[var(--theme-text-on-primary)] mb-6 reveal">Settings</h1>
 
-        <div className="glass-card p-5 mb-4 flex items-center gap-4">
+        <div className="glass-card p-5 mb-4 flex items-center gap-4 reveal" style={{ '--delay': '0.05s' }}>
           {avatarUrl ? (
             <img src={avatarUrl} alt="" className="w-14 h-14 rounded-full ring-2 ring-white/20" />
           ) : (
@@ -45,21 +46,26 @@ export default function Settings({
           </div>
         </div>
 
-        <div className="glass-card mb-4 overflow-hidden">
+        <div className="glass-card mb-4 overflow-hidden reveal" style={{ '--delay': '0.1s' }}>
           <button
             onClick={() => setShowIncomeModal(true)}
             className="w-full flex items-center justify-between px-5 py-4 transition-colors hover:opacity-90"
           >
-            <div className="text-left">
-              <p className="font-medium text-[var(--theme-text-on-primary)]">💰 Monthly income</p>
-              <p className="text-sm text-[var(--theme-text-muted)]">Primary salary for this month</p>
+            <div className="flex items-center gap-3 text-left">
+              <span className="icon-chip w-10 h-10 theme-accent-text" style={{ background: 'color-mix(in srgb, var(--theme-accent) 14%, transparent)' }}>
+                <Icon name="coins" size={19} />
+              </span>
+              <div>
+                <p className="font-medium text-[var(--theme-text-on-primary)]">Monthly income</p>
+                <p className="text-sm text-[var(--theme-text-muted)]">Primary salary for this month</p>
+              </div>
             </div>
-            <span className="font-semibold text-[var(--theme-accent)]">{formatSGD(income)}</span>
+            <span className="font-semibold text-[var(--theme-accent)] num">{formatSGD(income)}</span>
           </button>
           {totalIncome !== income && (
-            <div className="px-5 py-3 border-t border-white/10 flex justify-between">
+            <div className="px-5 py-3 border-t theme-divider flex justify-between">
               <span className="text-sm text-[var(--theme-text-muted)]">Total (incl. sources)</span>
-              <span className="text-sm font-semibold text-[var(--theme-accent)]">{formatSGD(totalIncome)}</span>
+              <span className="text-sm font-semibold text-[var(--theme-accent)] num">{formatSGD(totalIncome)}</span>
             </div>
           )}
         </div>
@@ -76,9 +82,10 @@ export default function Settings({
 
         <button
           onClick={onSignOut}
-          className="w-full py-3.5 font-semibold rounded-2xl transition-colors theme-muted border theme-divider hover:opacity-80"
+          className="w-full py-3.5 font-semibold rounded-2xl transition-colors theme-muted border theme-divider hover:opacity-80 pressable flex items-center justify-center gap-2"
         >
-          🚪 Sign out
+          <Icon name="log-out" size={17} />
+          Sign out
         </button>
       </div>
 

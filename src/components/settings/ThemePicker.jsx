@@ -1,9 +1,15 @@
 import { THEMES } from '../../lib/themes'
+import Icon from '../icons/Icon'
 
 export default function ThemePicker({ currentTheme, onSelect }) {
   return (
-    <div className="glass-card mb-4 p-5">
-      <p className="font-medium text-[var(--theme-text-on-primary)] mb-4">🎨 Appearance</p>
+    <div className="glass-card mb-4 p-5 reveal" style={{ '--delay': '0.15s' }}>
+      <p className="font-medium text-[var(--theme-text-on-primary)] mb-4 flex items-center gap-3">
+        <span className="icon-chip w-10 h-10 theme-accent-text" style={{ background: 'color-mix(in srgb, var(--theme-accent) 14%, transparent)' }}>
+          <Icon name="palette" size={19} />
+        </span>
+        Appearance
+      </p>
       <p className="text-sm text-[var(--theme-text-muted)] mb-3">Theme</p>
       <div className="space-y-2">
         {Object.values(THEMES).map((theme) => {
@@ -12,8 +18,8 @@ export default function ThemePicker({ currentTheme, onSelect }) {
             <button
               key={theme.id}
               onClick={() => onSelect(theme.id)}
-              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border transition-colors ${
-                selected ? 'border-[var(--theme-accent)] bg-[var(--theme-card-bg)]' : 'border-white/10'
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl border transition-colors pressable ${
+                selected ? 'border-[var(--theme-accent)] bg-[var(--theme-card-bg)]' : 'border-[var(--theme-border)]'
               }`}
             >
               <span

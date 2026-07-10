@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { formatSGD } from '../../lib/utils'
+import Icon, { CategoryChip } from '../icons/Icon'
 
 const DELETE_WIDTH = 72
 
@@ -50,7 +51,7 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
       </div>
 
       <div
-        className="relative flex items-center gap-3 py-3"
+        className="relative flex items-center gap-3 py-3.5"
         style={{
           transform: `translateX(${offset}px)`,
           transition: isDragging ? 'none' : 'transform 0.2s ease-out',
@@ -60,16 +61,11 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        <div
-          className="w-11 h-11 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-          style={{ backgroundColor: `${expense.categories?.color || '#94a3b8'}30` }}
-        >
-          {expense.categories?.icon || '💳'}
-        </div>
+        <CategoryChip icon={expense.categories?.icon} color={expense.categories?.color} size={44} iconSize={19} />
 
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium theme-heading truncate">{expense.name}</p>
-          <p className="text-xs theme-muted truncate">
+          <p className="text-sm font-medium text-[var(--theme-text-on-primary)] truncate">{expense.name}</p>
+          <p className="text-xs text-[var(--theme-text-muted)] truncate">
             {expense.categories?.name || 'Uncategorized'} ·{' '}
             {new Date(expense.date + 'T00:00:00').toLocaleDateString('en-SG', {
               weekday: 'short',
@@ -80,27 +76,27 @@ export default function ExpenseItem({ expense, onEdit, onDelete }) {
           </p>
         </div>
 
-        <div className="flex flex-col items-end gap-1.5 flex-shrink-0 pr-1">
-          <p className="text-sm font-bold theme-heading">{formatSGD(expense.amount)}</p>
-          <div className="flex items-center gap-0.5">
+        <div className="flex flex-col items-end gap-1 flex-shrink-0 pr-1">
+          <p className="text-sm font-bold text-[var(--theme-text-on-primary)] num">{formatSGD(expense.amount)}</p>
+          <div className="flex items-center">
             <button
               type="button"
               onClick={() => {
                 setOffset(0)
                 onEdit(expense)
               }}
-              className="w-8 h-8 flex items-center justify-center rounded-lg theme-muted hover:text-[var(--theme-accent)] transition-colors"
+              className="w-8 h-7 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-accent)] transition-colors pressable"
               aria-label="Edit expense"
             >
-              ✏️
+              <Icon name="pencil" size={14} />
             </button>
             <button
               type="button"
               onClick={handleDelete}
-              className="w-8 h-8 flex items-center justify-center rounded-lg theme-muted hover:text-[var(--theme-error)] transition-colors"
+              className="w-8 h-7 flex items-center justify-center rounded-lg text-[var(--theme-text-muted)] hover:text-[var(--theme-error)] transition-colors pressable"
               aria-label="Delete expense"
             >
-              ✕
+              <Icon name="trash" size={14} />
             </button>
           </div>
         </div>

@@ -1,9 +1,11 @@
+import Icon from '../icons/Icon'
+
 const TABS = [
-  { id: 'dashboard', label: 'Home', icon: '🏠' },
-  { id: 'expenses', label: 'Expenses', icon: '📋' },
-  { id: 'budget', label: 'Budget', icon: '🎯' },
-  { id: 'splurge', label: 'Splurge', icon: '✨' },
-  { id: 'settings', label: 'Settings', icon: '⚙️' },
+  { id: 'dashboard', label: 'Home', icon: 'home' },
+  { id: 'expenses', label: 'Expenses', icon: 'receipt' },
+  { id: 'budget', label: 'Budget', icon: 'target' },
+  { id: 'splurge', label: 'Splurge', icon: 'sparkles' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
 ]
 
 export default function BottomNav({ activeTab, onTabChange }) {
@@ -16,28 +18,27 @@ export default function BottomNav({ activeTab, onTabChange }) {
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
-              className="flex-1 flex flex-col items-center py-2.5 gap-0.5"
+              className="flex-1 flex flex-col items-center pt-2 pb-2.5 gap-1 pressable relative"
             >
               <span
-                className="text-xl leading-none transition-opacity"
-                style={{ opacity: isActive ? 1 : 0.45 }}
+                className="relative flex items-center justify-center w-12 h-7 rounded-full transition-all duration-300"
+                style={{
+                  color: isActive ? 'var(--theme-tab-active)' : 'var(--theme-nav-inactive)',
+                  background: isActive
+                    ? 'color-mix(in srgb, var(--theme-tab-active) 16%, transparent)'
+                    : 'transparent',
+                }}
               >
-                {tab.icon}
+                <Icon name={tab.icon} size={20} strokeWidth={isActive ? 2.4 : 2} />
               </span>
               <span
-                className="text-[10px] font-medium"
+                className="text-[10px] font-medium transition-colors duration-300"
                 style={{
                   color: isActive ? 'var(--theme-text-on-primary)' : 'var(--theme-nav-inactive)',
                 }}
               >
                 {tab.label}
               </span>
-              {isActive && (
-                <span
-                  className="w-5 h-0.5 rounded-full mt-0.5"
-                  style={{ background: 'var(--theme-tab-active)' }}
-                />
-              )}
             </button>
           )
         })}
