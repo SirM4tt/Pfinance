@@ -2,6 +2,7 @@ import { useState } from 'react'
 import SetIncomeModal from '../components/income/SetIncomeModal'
 import ThemePicker from '../components/settings/ThemePicker'
 import CategoryEditor from '../components/settings/CategoryEditor'
+import QuickLogSection from '../components/settings/QuickLogSection'
 import { formatSGD } from '../lib/utils'
 import Icon from '../components/icons/Icon'
 
@@ -20,6 +21,7 @@ export default function Settings({
   onThemeChange,
   onSetPaynow,
   onSignOut,
+  quickLog,
 }) {
   const [showIncomeModal, setShowIncomeModal] = useState(false)
   const [editingPaynow, setEditingPaynow] = useState(false)
@@ -146,6 +148,8 @@ export default function Settings({
             </div>
           )}
         </div>
+
+        <QuickLogSection quickLog={quickLog} />
 
         <ThemePicker currentTheme={themeId} onSelect={onThemeChange} />
 

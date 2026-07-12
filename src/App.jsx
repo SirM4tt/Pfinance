@@ -4,6 +4,7 @@ import { useFinanceData } from './hooks/useFinanceData'
 import { useSplurge } from './hooks/useSplurge'
 import { useSplit } from './hooks/useSplit'
 import { useUserStats } from './hooks/useUserStats'
+import { useQuickLog } from './hooks/useQuickLog'
 import { getMonthKey } from './lib/utils'
 import { yourShare } from './lib/splitMath'
 import { checkMonthEnd, getPrevMonthKey, isFirstOfMonth } from './lib/streaks'
@@ -37,6 +38,7 @@ function AppContent() {
   const splurge = useSplurge(userId, dataEnabled && activeTab === 'splurge')
   const split = useSplit(userId, dataEnabled && activeTab === 'split')
   const userStats = useUserStats(userId, dataEnabled)
+  const quickLog = useQuickLog(userId, dataEnabled && activeTab === 'settings')
 
   const showWelcomeIncome = dataEnabled && !finance.loading && !finance.hasIncomeRecord
 
@@ -262,6 +264,7 @@ function AppContent() {
             onThemeChange={handleThemeChange}
             onSetPaynow={userStats.setPaynow}
             onSignOut={signOut}
+            quickLog={quickLog}
           />
         )}
 

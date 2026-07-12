@@ -87,3 +87,10 @@ export const user = { id: 'demo-user', email: 'matthew@example.com' }
 
 export const noop = () => {}
 export const asyncNoop = async () => {}
+
+export const quickLog = {
+  loading: false,
+  config: { enabled: true, token: 'a3f8c12d94be7605e1f2a8c4d6b90317f5e2c8a1d4b76093' },
+  enable: asyncNoop,
+  disable: asyncNoop,
+}
