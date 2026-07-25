@@ -1,5 +1,5 @@
 // UI demo harness — renders the real pages with mock data, no Supabase needed.
-// Drive it with ?tab=dashboard|expenses|budget|splurge|settings|login&theme=navy|gold|pastel|dark
+// Drive it with ?tab=dashboard|expenses|split|budget|splurge|settings|login&theme=navy|matcha|pastel|dark
 import { useState } from 'react'
 import BottomNav from '../components/layout/BottomNav'
 import { ToastProvider } from '../components/layout/Toast'
@@ -8,6 +8,7 @@ import LoginScreen from '../components/auth/LoginScreen'
 import Dashboard from '../pages/Dashboard'
 import Expenses from '../pages/Expenses'
 import Budget from '../pages/Budget'
+import Split from '../pages/Split'
 import Splurge from '../pages/Splurge'
 import Settings from '../pages/Settings'
 import * as mock from './mockData'
@@ -62,6 +63,19 @@ export default function DemoApp() {
               onDeleteExpense={mock.asyncNoop}
             />
           )}
+          {activeTab === 'split' && (
+            <Split
+              splits={mock.splits}
+              loading={false}
+              categories={mock.categories}
+              paynowId="+65 9123 4567"
+              onAddSplit={mock.asyncNoop}
+              onSettlePerson={mock.asyncNoop}
+              onSettleAll={mock.asyncNoop}
+              onDeleteSplit={mock.asyncNoop}
+              onToast={mock.noop}
+            />
+          )}
           {activeTab === 'budget' && (
             <Budget
               monthKey={mock.monthKey}
@@ -95,12 +109,14 @@ export default function DemoApp() {
               totalIncome={mock.income}
               categories={mock.categories}
               themeId={themeId}
+              paynowId="+65 9123 4567"
               onSetIncome={mock.asyncNoop}
               onAddCategory={mock.asyncNoop}
               onUpdateCategory={mock.asyncNoop}
               onDeleteCategory={mock.asyncNoop}
               onReorderCategories={mock.asyncNoop}
               onThemeChange={mock.asyncNoop}
+              onSetPaynow={mock.asyncNoop}
               onSignOut={mock.asyncNoop}
             />
           )}

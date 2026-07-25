@@ -1,14 +1,10 @@
 import { useRef, useState } from 'react'
-import { useToast } from '../layout/Toast'
-import { scanReceipt, matchCategoryId } from '../../lib/receiptScanner'
 import Icon from '../icons/Icon'
 import CategoryPicker from './CategoryPicker'
 
 const DISMISS_THRESHOLD = 100
 
 export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit }) {
-  const { showToast } = useToast()
-  const fileInputRef = useRef(null)
   const sheetRef = useRef(null)
   const dragStartY = useRef(null)
   const today = new Date().toISOString().split('T')[0]
@@ -18,8 +14,6 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
   const [date, setDate] = useState(today)
   const [note, setNote] = useState('')
   const [submitting, setSubmitting] = useState(false)
-  const [scanning, setScanning] = useState(false)
-  const [thumbnail, setThumbnail] = useState(null)
   const [error, setError] = useState('')
   const [dragY, setDragY] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
@@ -30,7 +24,6 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
     setCategoryId(categories[0]?.id || '')
     setDate(today)
     setNote('')
-    setThumbnail(null)
     setError('')
     setDragY(0)
   }
@@ -59,37 +52,6 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
     }
     dragStartY.current = null
     setIsDragging(false)
-  }
-
-  const handleScanClick = () => {
-    fileInputRef.current?.click()
-  }
-
-  const handleFileSelect = async (e) => {
-    const file = e.target.files?.[0]
-    e.target.value = ''
-    if (!file) return
-
-    setScanning(true)
-    setError('')
-
-    try {
-      const result = await scanReceipt(file)
-      setName(result.merchant)
-      setAmount(String(result.amount))
-      if (result.date) {
-        const parsed = new Date(result.date + 'T00:00:00')
-        if (!isNaN(parsed.getTime())) {
-          setDate(parsed.toISOString().split('T')[0])
-        }
-      }
-      setCategoryId(matchCategoryId(result.category, categories))
-      setThumbnail(result.thumbnail)
-    } catch {
-      showToast?.("Couldn't read receipt — please fill in manually")
-    } finally {
-      setScanning(false)
-    }
   }
 
   const handleSubmit = async (e) => {
@@ -168,45 +130,6 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
           </div>
         </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          className="hidden"
-          onChange={handleFileSelect}
-        />
-
-        <button
-          type="button"
-          onClick={handleScanClick}
-          disabled={scanning}
-          className="w-full mb-5 py-3 rounded-2xl border border-dashed theme-heading font-medium flex items-center justify-center gap-2 disabled:opacity-50 pressable"
-          style={{ borderColor: 'color-mix(in srgb, var(--theme-accent) 40%, transparent)', color: 'var(--theme-accent)' }}
-        >
-          <Icon name="camera" size={18} />
-          Scan Receipt
-        </button>
-
-        {scanning && (
-          <div className="flex items-center justify-center gap-2 mb-4 text-sm theme-muted">
-            <span className="w-4 h-4 border-2 border-[var(--theme-accent)] border-t-transparent rounded-full animate-spin" />
-            Scanning receipt...
-          </div>
-        )}
-
-        {thumbnail && !scanning && (
-          <div className="mb-4 flex items-center gap-3">
-            <img
-              src={thumbnail}
-              alt="Scanned receipt"
-              className="w-16 h-16 rounded-lg object-cover"
-              style={{ border: '1px solid var(--theme-border)' }}
-            />
-            <p className="text-xs theme-muted">Receipt scanned — review details below</p>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block theme-label mb-1.5">Amount (SGD)</label>
@@ -248,7 +171,7 @@ export default function AddExpenseModal({ isOpen, onClose, categories, onSubmit 
 
           {error && <p className="text-sm text-[var(--theme-error)]">{error}</p>}
 
-          <button type="submit" disabled={submitting || scanning} className="w-full py-3.5 theme-btn-gradient disabled:opacity-50">
+          <button type="submit" disabled={submitting} className="w-full py-3.5 theme-btn-gradient disabled:opacity-50">
             {submitting ? 'Adding...' : 'Add expense'}
           </button>
         </form>

@@ -1,6 +1,8 @@
 import { applyTheme } from './lib/themes'
+import { initPwa } from './lib/registerPwa'
 
 applyTheme('navy')
+initPwa()
 
 import { createRoot } from 'react-dom/client'
 import './index.css'

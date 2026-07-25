@@ -3,6 +3,7 @@ import Icon from '../icons/Icon'
 const TABS = [
   { id: 'dashboard', label: 'Home', icon: 'home' },
   { id: 'expenses', label: 'Expenses', icon: 'receipt' },
+  { id: 'split', label: 'Split', icon: 'users' },
   { id: 'budget', label: 'Budget', icon: 'target' },
   { id: 'splurge', label: 'Splurge', icon: 'sparkles' },
   { id: 'settings', label: 'Settings', icon: 'settings' },

@@ -66,6 +66,23 @@ export const goals = [
   { id: 'g2', name: 'New keyboard', emoji: '⌨️', target_amount: 250, saved: 250, target_date: `${y}-09-01`, created_at: d(2) },
 ]
 
+export const splits = [
+  {
+    id: 'sp1',
+    title: 'Din Tai Fung',
+    total_amount: 145.8,
+    tip_percent: 10,
+    payer_name: 'You',
+    date: d(6),
+    settled: false,
+    participants: [
+      { id: 'sp1a', name: 'You', amount_owed: 53.46, is_payer: true, settled: true },
+      { id: 'sp1b', name: 'Alex', amount_owed: 53.46, is_payer: false, settled: false },
+      { id: 'sp1c', name: 'Sam', amount_owed: 53.46, is_payer: false, settled: false },
+    ],
+  },
+]
+
 export const user = { id: 'demo-user', email: 'matthew@example.com' }
 
 export const noop = () => {}

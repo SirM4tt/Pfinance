@@ -2,8 +2,10 @@ import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useAuth } from './hooks/useAuth'
 import { useFinanceData } from './hooks/useFinanceData'
 import { useSplurge } from './hooks/useSplurge'
+import { useSplit } from './hooks/useSplit'
 import { useUserStats } from './hooks/useUserStats'
 import { getMonthKey } from './lib/utils'
+import { yourShare } from './lib/splitMath'
 import { checkMonthEnd, getPrevMonthKey, isFirstOfMonth } from './lib/streaks'
 import { applyTheme } from './lib/themes'
 import LoginScreen from './components/auth/LoginScreen'
@@ -11,10 +13,12 @@ import WelcomeIncomeModal from './components/income/WelcomeIncomeModal'
 import BottomNav from './components/layout/BottomNav'
 import SupabaseStatus from './components/layout/SupabaseStatus'
 import { ToastProvider, useToast } from './components/layout/Toast'
+import PwaUpdatePrompt from './components/layout/PwaUpdatePrompt'
 import ThemeProvider from './components/layout/ThemeProvider'
 import Dashboard from './pages/Dashboard'
 import Expenses from './pages/Expenses'
 import Budget from './pages/Budget'
+import Split from './pages/Split'
 import Splurge from './pages/Splurge'
 import Settings from './pages/Settings'
 
@@ -31,6 +35,7 @@ function AppContent() {
 
   const finance = useFinanceData(userId, monthKey, dataEnabled)
   const splurge = useSplurge(userId, dataEnabled && activeTab === 'splurge')
+  const split = useSplit(userId, dataEnabled && activeTab === 'split')
   const userStats = useUserStats(userId, dataEnabled)
 
   const showWelcomeIncome = dataEnabled && !finance.loading && !finance.hasIncomeRecord
@@ -100,6 +105,45 @@ function AppContent() {
     applyTheme(themeId)
     await userStats.setTheme(themeId)
     showToast('Theme updated')
+  }
+
+  const handleAddSplit = async (data) => {
+    const { logExpense, category_id, ...splitData } = data
+    const created = await split.addSplit(splitData)
+
+    if (logExpense) {
+      const share = yourShare(created)
+      if (share > 0) {
+        try {
+          const expense = await finance.addExpense({
+            name: `${created.title} (split)`,
+            amount: share,
+            category_id: category_id || null,
+            date: created.date,
+            note: created.note || 'From Split',
+          })
+          if (expense?.id) {
+            await split.linkExpense(created.id, expense.id)
+          }
+          showToast('Split created · share logged')
+        } catch (err) {
+          console.error(err)
+          showToast('Split created (expense log failed)')
+        }
+        return
+      }
+    }
+    showToast('Split created')
+  }
+
+  const handleSettlePerson = async (splitId, participantId) => {
+    await split.settleParticipant(splitId, participantId)
+    showToast('Marked as settled')
+  }
+
+  const handleSettleAll = async (splitId) => {
+    await split.settleSplit(splitId)
+    showToast('Split settled')
   }
 
   if (authLoading) {
@@ -177,6 +221,20 @@ function AppContent() {
           />
         )}
 
+        {!showWelcomeIncome && activeTab === 'split' && (
+          <Split
+            splits={split.splits}
+            loading={split.loading}
+            categories={finance.categories}
+            paynowId={userStats.stats?.paynow_id}
+            onAddSplit={handleAddSplit}
+            onSettlePerson={handleSettlePerson}
+            onSettleAll={handleSettleAll}
+            onDeleteSplit={split.deleteSplit}
+            onToast={showToast}
+          />
+        )}
+
         {!showWelcomeIncome && activeTab === 'splurge' && (
           <Splurge
             goals={splurge.goals}
@@ -195,12 +253,14 @@ function AppContent() {
             totalIncome={finance.totalIncome}
             categories={finance.categories}
             themeId={userStats.stats?.theme_id || 'navy'}
+            paynowId={userStats.stats?.paynow_id || ''}
             onSetIncome={finance.setIncome}
             onAddCategory={finance.addCategory}
             onUpdateCategory={finance.updateCategory}
             onDeleteCategory={finance.deleteCategory}
             onReorderCategories={finance.reorderCategories}
             onThemeChange={handleThemeChange}
+            onSetPaynow={userStats.setPaynow}
             onSignOut={signOut}
           />
         )}
@@ -216,6 +276,7 @@ function AppContent() {
 export default function App() {
   return (
     <ToastProvider>
+      <PwaUpdatePrompt />
       <AppContent />
     </ToastProvider>
   )

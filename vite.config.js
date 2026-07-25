@@ -9,6 +9,13 @@ export default defineConfig(({ mode }) => ({
       ? [
           VitePWA({
             registerType: 'autoUpdate',
+            injectRegister: null,
+            workbox: {
+              skipWaiting: true,
+              clientsClaim: true,
+              cleanupOutdatedCaches: true,
+              globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,webmanifest}'],
+            },
             manifest: {
               name: 'Pfinance',
               short_name: 'Pfinance',

@@ -9,6 +9,7 @@ const DEFAULT_STATS = {
   last_digest_shown: null,
   celebration_count: 0,
   theme_id: 'navy',
+  paynow_id: '',
 }
 
 export function useUserStats(userId, enabled = true) {
@@ -79,6 +80,8 @@ export function useUserStats(userId, enabled = true) {
 
   const setTheme = async (themeId) => updateStats({ theme_id: themeId })
 
+  const setPaynow = async (paynowId) => updateStats({ paynow_id: paynowId?.trim() || null })
+
   const dismissDigest = async () => {
     const today = new Date().toISOString().split('T')[0]
     return updateStats({ last_digest_shown: today })
@@ -94,6 +97,7 @@ export function useUserStats(userId, enabled = true) {
     loading,
     updateStats,
     setTheme,
+    setPaynow,
     dismissDigest,
     incrementCelebration,
     refresh: load,
