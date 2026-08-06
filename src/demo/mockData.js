@@ -29,6 +29,14 @@ export const expenses = [
   { id: 'e7', name: 'Electricity bill', amount: 74.2, date: d(5), category_id: 'c6', categories: cat('c6'), note: '' },
   { id: 'e8', name: 'Din Tai Fung', amount: 48.6, date: d(6), category_id: 'c2', categories: cat('c2'), note: 'dinner w/ friends' },
   { id: 'e9', name: 'MRT top-up', amount: 20, date: d(6), category_id: 'c3', categories: cat('c3'), note: '' },
+  { id: 'e10', name: 'Groceries', amount: 42.1, date: d(9), category_id: 'c2', categories: cat('c2'), note: '' },
+  { id: 'e11', name: 'Cinema', amount: 32, date: d(11), category_id: 'c5', categories: cat('c5'), note: '' },
+  { id: 'e12', name: 'Petrol', amount: 60, date: d(13), category_id: 'c3', categories: cat('c3'), note: '' },
+  { id: 'e13', name: 'Lunch w/ team', amount: 18.5, date: d(14), category_id: 'c2', categories: cat('c2'), note: '' },
+  { id: 'e14', name: 'Phone bill', amount: 45, date: d(15), category_id: 'c6', categories: cat('c6'), note: '' },
+  { id: 'e15', name: 'Shopee haul', amount: 96.3, date: d(18), category_id: 'c4', categories: cat('c4'), note: '' },
+  { id: 'e16', name: 'Groceries', amount: 55, date: d(20), category_id: 'c2', categories: cat('c2'), note: '' },
+  { id: 'e17', name: 'Bar night', amount: 68, date: d(22), category_id: 'c5', categories: cat('c5'), note: '' },
 ]
 
 export const totalSpent = expenses.reduce((s, e) => s + e.amount, 0)
@@ -87,3 +95,10 @@ export const user = { id: 'demo-user', email: 'matthew@example.com' }
 
 export const noop = () => {}
 export const asyncNoop = async () => {}
+
+export const quickLog = {
+  loading: false,
+  config: { enabled: true, token: 'a3f8c12d94be7605e1f2a8c4d6b90317f5e2c8a1d4b76093' },
+  enable: asyncNoop,
+  disable: asyncNoop,
+}

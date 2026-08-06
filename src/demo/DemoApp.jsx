@@ -118,6 +118,7 @@ export default function DemoApp() {
               onThemeChange={mock.asyncNoop}
               onSetPaynow={mock.asyncNoop}
               onSignOut={mock.asyncNoop}
+              quickLog={mock.quickLog}
             />
           )}
           <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
