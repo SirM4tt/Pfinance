@@ -7,6 +7,7 @@ import RecentExpenses from '../components/dashboard/RecentExpenses'
 import WeeklyDigestCard from '../components/dashboard/WeeklyDigestCard'
 import StreakBadge from '../components/dashboard/StreakBadge'
 import MonthEndModal from '../components/dashboard/MonthEndModal'
+import SpendingCalendarModal from '../components/dashboard/SpendingCalendarModal'
 import AddExpenseModal from '../components/expenses/AddExpenseModal'
 import AddExpenseFab from '../components/expenses/AddExpenseFab'
 import { formatMonthLabel } from '../lib/utils'
@@ -31,6 +32,7 @@ export default function Dashboard({
 }) {
   const [showAddModal, setShowAddModal] = useState(false)
   const [showStreakInfo, setShowStreakInfo] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
 
   const today = new Date()
   const digest = useMemo(() => generateDigest(expenses, income, today), [expenses, income])
@@ -61,7 +63,12 @@ export default function Dashboard({
       )}
 
       <div className="header-gradient pb-2">
-        <TopBar monthKey={monthKey} onMonthChange={onMonthChange} variant="hero" />
+        <TopBar
+          monthKey={monthKey}
+          onMonthChange={onMonthChange}
+          variant="hero"
+          onOpenCalendar={() => setShowCalendar(true)}
+        />
         <BalanceHero
           income={income}
           totalSpent={totalSpent}
@@ -97,6 +104,13 @@ export default function Dashboard({
         onClose={() => setShowAddModal(false)}
         categories={categories}
         onSubmit={handleAddExpense}
+      />
+
+      <SpendingCalendarModal
+        isOpen={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        monthKey={monthKey}
+        expenses={expenses}
       />
     </div>
   )

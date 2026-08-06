@@ -1,7 +1,7 @@
 import { formatMonthLabel, getGreeting } from '../../lib/utils'
 import Icon from '../icons/Icon'
 
-export default function TopBar({ monthKey, onMonthChange, variant }) {
+export default function TopBar({ monthKey, onMonthChange, variant, onOpenCalendar }) {
   const [year, month] = monthKey.split('-')
   const date = new Date(Number(year), Number(month) - 1, 1)
 
@@ -26,6 +26,16 @@ export default function TopBar({ monthKey, onMonthChange, variant }) {
         <h1 className={`text-xl font-bold font-display ${titleClass}`}>{formatMonthLabel(monthKey)}</h1>
       </div>
       <div className="flex items-center gap-1 rounded-2xl p-1" style={{ background: 'var(--theme-surface)' }}>
+        {onOpenCalendar && (
+          <button
+            onClick={onOpenCalendar}
+            className="w-9 h-9 flex items-center justify-center rounded-xl theme-accent-text pressable"
+            aria-label="Open spending calendar"
+            title="Spending calendar"
+          >
+            <Icon name="calendar" size={17} strokeWidth={2.1} />
+          </button>
+        )}
         <button
           onClick={goToPrevMonth}
           className="w-9 h-9 flex items-center justify-center rounded-xl theme-btn-ghost pressable"

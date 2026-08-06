@@ -40,3 +40,10 @@ export function getMonthDateRange(monthKey) {
   const end = `${year}-${month}-${String(lastDay).padStart(2, '0')}`
   return { start, end }
 }
+
+export function getMonthGrid(monthKey) {
+  const [year, month] = monthKey.split('-').map(Number)
+  const daysInMonth = new Date(year, month, 0).getDate()
+  const startWeekday = new Date(year, month - 1, 1).getDay() // 0 = Sunday
+  return { daysInMonth, startWeekday }
+}
